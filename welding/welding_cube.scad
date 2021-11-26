@@ -145,6 +145,6 @@ module welding_cube(size, thickness, num_teeth_per_edge,
 }
 
 
-$fn=100;
-projection() welding_face(250, 4, 10, 16, 55, 52.7777778, 6, 0.25); // for DXF export
-//welding_cube(250, 4, 10, 16, 55, 52.7777778, 6, 0.25);
+//$fn=30;
+projection() welding_face(300, 5, 10, 16, 55, 52.7777778, 6, 0.25); // for DXF export
+//welding_cube(300, 5, 10, 16, 55, 52.7777778, 6, 0.25);
