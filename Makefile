@@ -1,4 +1,4 @@
-SOURCE_FILES	= $(wildcard */*.scad)
+SOURCE_FILES	= $(wildcard cnc/*.scad) $(wildcard ironworks/*.scad) $(wildcard welding/*.scad)
 BUILD_PREFIX    = build
 DEPS_FILES	= $(addprefix $(BUILD_PREFIX)/, $(patsubst %.scad, %.d, $(SOURCE_FILES)))
 DXF_FILES	= $(addprefix $(BUILD_PREFIX)/, $(patsubst %.scad, %.dxf, $(SOURCE_FILES)))
