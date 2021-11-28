@@ -3,48 +3,100 @@ include <../libraries/NopSCADlib/vitamins/stepper_motors.scad>
 include <../libraries/NopSCADlib/vitamins/rails.scad>
 include <../libraries/NopSCADlib/vitamins/leadnuts.scad>
 include <../libraries/NopSCADlib/vitamins/bearing_blocks.scad>
+include <../libraries/NopSCADlib/vitamins/extrusions.scad>
+
+include <sbr_rails.scad>
+include <sbr_bearing_blocks.scad>
+include <ballscrew_mounts.scad>
+include <sfu1605.scad>
+include <fixed_bearings.scad>
+include <fixed_bearing_adapter.scad>
+
 use <../libraries/NopSCADlib/vitamins/rod.scad>
-// include <../libraries/NopSCADlib/vitamins/ball_bearings.scad>
-// ball_bearing(BB6201);
+
 
 $show_threads = true;
 
-translate([0, 75, 0]) {
-	rail_assembly(HGH20CA_carriage, 1500, 50);
+rail_length = 700;
+rod_center_height = sbr_rail_rod_center_height(SBR16RAIL);
+fixed_bearing_adapter_height = 10;
+slot_type = E3060; // Use two E3060 to simulate a 30x120
+slot_profile_width = 120;
+slot_profile_height = 30;
+
+
+color("gray") {
+	translate([25, slot_profile_width/2, slot_profile_height/2])
+	rotate([0, 90, 0]) {
+		translate([0, -slot_profile_width/4, 0]) extrusion(E3060, rail_length+100, cornerHole = true);
+		translate([0, slot_profile_width/4, 0]) extrusion(E3060, rail_length+100, cornerHole = true);
+	}
 }
 
-translate([0, -75, 0]) {
-	rail_assembly(HGH20CA_carriage, 1500, 50);
+translate([-sbr_bearing_block_length(SBR16RAIL)/2, slot_profile_width/4, slot_profile_height]) {
+	rotate([0, 0, 0]) {
+		sbr_rail(SBR16RAIL, rail_length);
+		translate([-sbr_bearing_block_length(SBR16RAIL), 0, rod_center_height]) {
+			sbr_bearing_block(SBR16UU);
+		}
+		translate([sbr_bearing_block_length(SBR16RAIL), 0, rod_center_height]) {
+			sbr_bearing_block(SBR16UU);
+		}
+	}
+}
+
+translate([0, 3*slot_profile_width/4,
+           slot_profile_height+rod_center_height+fixed_bearing_adapter_height]) {
+	rotate([0, 90, 0]) {
+		sfu1605(rail_length);
+	}
+	translate([-ballscrew_mount_length(DSG16HH)/2-sbr_bearing_block_length(SBR16RAIL)/2, 0, 0]) {
+		rotate([0, 90, 180]) {
+			leadnut(SFU1610);
+		}
+		ballscrew_mount(DSG16HH);
+	}
+}
+
+translate([-rail_length/2+(bf_depth(BF12)-bf_ball_bearing_width(BF12))/2+fixed_bearing_bf_ax,
+           bk_width(BK12)/2 + 3*slot_profile_width/4,
+           slot_profile_height + fixed_bearing_adapter_height]) {
+	rotate([90, 0, 270]) {
+		BFxx(BF12);
+	}
+	translate([0, 0, -fixed_bearing_adapter_height]) {
+		rotate([180, 180, 0])
+		fixed_bearing_bf_adapter(1.5*bf_depth(BF12), bf_width(BF12), fixed_bearing_adapter_height,
+		                         bf_depth(BF12)/2, bf_hole_P(BF12), slot_profile_width/4, bk_hole_diam(BK12));
+	}
+}
+
+translate([rail_length/2 - fixed_bearing_bk_offset,
+           -bk_width(BK12)/2 + 3*slot_profile_width/4,
+           slot_profile_height + fixed_bearing_adapter_height]) {
+	rotate([90, 0, 90]) {
+		BKxx(BK12);
+	}
+	translate([0, 0, -fixed_bearing_adapter_height]) {
+		fixed_bearing_bk_adapter(25, 60, fixed_bearing_adapter_height,
+		                         bk_hole_C1(BK12), bk_hole_P(BK12),
+		                         slot_profile_width/4, bk_hole_diam(BK12));
+	}
 }
 
 
-translate([800, 0, NEMA23[1]/2]) {
+translate([rail_length/2-fixed_bearing_bk_ax1,
+           3*slot_profile_width/4,
+           slot_profile_height + rod_center_height + fixed_bearing_adapter_height]) {
+	rotate([0, 90, 0]) {
+		cylinder(30, 12.5, 12.5);
+	}
+}
+
+translate([rail_length/2+25,
+           3*slot_profile_width/4,
+           slot_profile_height + rod_center_height + fixed_bearing_adapter_height]) {
 	rotate([0, -90, 0]) {
 		NEMA(NEMA23);
 	}
 }
-
-translate([0, 0, NEMA23[1]/2]) {
-	rotate([0, 90, 0]) {
-		leadscrew(10, 1500, 16, 4);
-	}
-}
-
-translate([0, 0, NEMA23[1]/2]) {
-	rotate([0, 90, 180]) {
-		leadnut(SFU1610);
-	}
-}
-
-
-translate([0, -200, 0]) {
-	rotate([-90,  0, 90]) {
-		scs_bearing_block(SCS16UU);
-	}
-}
-/*
-linear_extrude(40) {
-	circle(20);
-	polygon(points=[[0,0],[100,0],[0,100],[10,10],[80,10],[10,80]], paths=[[0,1,2],[3,4,5]],convexity=10);
-}
-*/
