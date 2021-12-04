@@ -1,5 +1,5 @@
-include <../libraries/NopSCADlib/core.scad>
-use <../libraries/NopSCADlib/vitamins/rod.scad>
+include <../../libraries/NopSCADlib/core.scad>
+use <../../libraries/NopSCADlib/vitamins/rod.scad>
 
 function sbr_rail_width(type) = type[4];
 function sbr_rail_rod_center_height(type) = type[2];
