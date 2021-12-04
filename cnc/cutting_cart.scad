@@ -5,12 +5,12 @@ include <../libraries/NopSCADlib/vitamins/leadnuts.scad>
 include <../libraries/NopSCADlib/vitamins/bearing_blocks.scad>
 include <../libraries/NopSCADlib/vitamins/extrusions.scad>
 
-include <sbr_rails.scad>
-include <sbr_bearing_blocks.scad>
-include <ballscrew_mounts.scad>
-include <sfu1605.scad>
-include <fixed_bearings.scad>
-include <fixed_bearing_adapter.scad>
+include <lib/sbr_rails.scad>
+include <lib/sbr_bearing_blocks.scad>
+include <lib/ballscrew_mounts.scad>
+include <lib/sfu1605.scad>
+include <lib/fixed_bearings.scad>
+include <lib/fixed_bearing_adapter.scad>
 
 use <../libraries/NopSCADlib/vitamins/rod.scad>
 

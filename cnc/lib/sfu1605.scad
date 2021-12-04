@@ -1,4 +1,4 @@
-use <../libraries/NopSCADlib/vitamins/rod.scad>
+use <../../libraries/NopSCADlib/vitamins/rod.scad>
 
 fixed_bearing_bk_ax1 = 15;
 fixed_bearing_bk_ax2 = 39;

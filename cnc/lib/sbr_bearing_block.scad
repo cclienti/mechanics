@@ -1,9 +1,9 @@
-include <../libraries/NopSCADlib/core.scad>
-use <../libraries/NopSCADlib/vitamins/screw.scad>
-use <../libraries/NopSCADlib/vitamins/nut.scad>
-use <../libraries/NopSCADlib/vitamins/washer.scad>
-use <../libraries/NopSCADlib/vitamins/linear_bearing.scad>
-use <../libraries/NopSCADlib/vitamins/circlip.scad>
+include <../../libraries/NopSCADlib/core.scad>
+use <../../libraries/NopSCADlib/vitamins/screw.scad>
+use <../../libraries/NopSCADlib/vitamins/nut.scad>
+use <../../libraries/NopSCADlib/vitamins/washer.scad>
+use <../../libraries/NopSCADlib/vitamins/linear_bearing.scad>
+use <../../libraries/NopSCADlib/vitamins/circlip.scad>
 
 function sbr_bearing_block_width(type) = type[3];
 function sbr_bearing_block_length(type) = type[4];

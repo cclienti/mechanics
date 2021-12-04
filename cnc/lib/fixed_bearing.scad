@@ -1,5 +1,5 @@
-include <../libraries/NopSCADlib/core.scad>
-include <../libraries/NopSCADlib/vitamins/ball_bearings.scad>
+include <../../libraries/NopSCADlib/core.scad>
+include <../../libraries/NopSCADlib/vitamins/ball_bearings.scad>
 
 function bk_width(type) = type[8];
 function bk_hole_C1(type) = type[6];
