@@ -1,6 +1,7 @@
 include <../../libraries/NopSCADlib/core.scad>
 include <../../libraries/NopSCADlib/vitamins/ball_bearings.scad>
 
+function bk_depth(type) = type[2];
 function bk_width(type) = type[8];
 function bk_hole_C1(type) = type[6];
 function bk_hole_P(type) = type[15];
@@ -30,7 +31,7 @@ module vertical_hole(H1, X, Y, Z) {
 
 module BKxx_base(type) {
 	d1 = type[1];
-	L = type[2];
+	L = bk_depth(type);
 	L1 = type[3];
 	L2 = type[4];
 	L3 = type[5];
