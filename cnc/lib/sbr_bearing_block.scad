@@ -24,7 +24,7 @@ module sbr_bearing_block(type) {
 }
 
 module sbr_bearing_block_base(type) {
-	sbr_h = type[1];
+	sbr_h = sbr_bearing_hole_dist(type);
 	sbr_E = type[2];
    sbr_W = sbr_bearing_block_width(type);
    sbr_L = sbr_bearing_block_length(type);
