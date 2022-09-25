@@ -12,14 +12,15 @@ function bf_width(type) = type[3];
 function bf_hole_P(type) = type[10];
 function bf_ball_bearing_width(type) = type[15];
 
+function ek_depth(type) = type[2];
+function ek_width(type) = type[6];
+function ek_hole_P(type) = type[12];
+function ek_hole_diam(type) = type[13];
 
-module BKxx(type) {
-	color("DarkSlateGray") render() BKxx_base(type);
-}
+function ef_depth(type) = type[2];
+function ef_width(type) = type[3];
+function ef_hole_P(type) = type[9];
 
-module BFxx(type) {
-	BFxx_base(type);
-}
 
 module vertical_hole(H1, X, Y, Z) {
 	rotate_extrude(convexity=10) {
@@ -27,6 +28,14 @@ module vertical_hole(H1, X, Y, Z) {
 		                [Y/2, H1-Z], [Y/2, H1+1], [0, H1+1]],
 		        convexity=10);
 	}
+}
+
+module BKxx(type) {
+	color("DarkSlateGray") render() BKxx_base(type);
+}
+
+module BFxx(type) {
+	BFxx_base(type);
 }
 
 module BKxx_base(type) {
@@ -182,6 +191,130 @@ module BFxx_base(type) {
 			}
 			translate([B-Bz, H1-Ey, -1]) {
 				cylinder(L+2, d2/2, d2/2);
+			}
+		}
+	}
+
+	translate([B/2, h, L/2]) ball_bearing(Z6000);
+
+}
+
+module EKxx(type) {
+	color("DarkSlateGray") render() EKxx_base(type);
+}
+
+module EFxx(type) {
+	EFxx_base(type);
+}
+
+module EKxx_base(type) {
+	d1 = type[1];
+	L = ek_depth(type);
+	L1 = type[3];
+	L2 = type[4];
+	L3 = type[5];
+	B = ek_width(type);
+	H = type[7];
+	b = type[8];
+	h = type[9];
+	B1 = type[10];
+	H1 = type[11];
+	P = ek_hole_P(type);
+	X = ek_hole_diam(type);
+
+	translate([(B-B1)/2, h - B1/2, L]) {
+		linear_extrude(L1) {
+			difference() {
+				polygon(points=[[0, 0], [0, B1], [B1, B1], [B1, 0]],
+				        convexity=10);
+				translate([B1/2, B1/2, 0])	{
+					circle(d1/2);
+				}
+			}
+		}
+	}
+
+	difference () {
+		linear_extrude(L) {
+			difference() {
+				polygon(points=[[0, 0],
+				                [B, 0],
+				                [B, H1],
+				                [B-(B-B1)/2, H1],
+				                [B-(B-B1)/2, H],
+				                [(B-B1)/2, H],
+				                [(B-B1)/2, H1],
+				                [0, H1]],
+				        convexity=10);
+
+				translate([B/2, h, 0]) {
+					circle(d1/2);
+				}
+			}
+		}
+
+		translate([(B-P)/2, 0, L/2]) {
+			rotate([-90, 0, 0]) {
+				linear_extrude(H1) circle(X/2);
+			}
+		}
+		translate([B-(B-P)/2, 0, L/2]) {
+			rotate([-90, 0, 0]) {
+				linear_extrude(H1) circle(X/2);
+			}
+		}
+	}
+
+}
+
+
+module EFxx_base(type) {
+	d1 = type[1];
+	L = ef_depth(type);
+	B = ef_width(type);
+	H = type[4];
+	b = type[5];
+	h = type[6];
+	B1 = type[7];
+	H1 = type[8];
+	P = ef_hole_P(type);
+	X = type[10];
+
+	Bw = (B-B1)/2;
+	Bz = (B-P)/2;
+
+	chamfer = 1;
+
+	bbd = 32;
+	bbw = 9;
+	Z6000 = ["7000Z", d1, bbd, bbw, "silver", 2.4, 3.7];
+
+
+	color("DarkSlateGray") render() {
+		difference() {
+			linear_extrude(L) {
+				difference() {
+					polygon(points=[[0, 0], [B, 0],
+					                [B, H1-chamfer], [B-chamfer, H1],
+					                [B-Bw, H1], [B-Bw, H-chamfer],
+					                [B-Bw-chamfer, H], [Bw+chamfer, H],
+					                [Bw, H-chamfer], [Bw, H1],
+					                [chamfer, H1], [0, H1-chamfer]],
+					        convexity=10);
+					translate([B/2, h, 0]) {
+						circle(bbd/2);
+					}
+				}
+			}
+			translate([Bz, 0, L/2]) {
+				rotate([-90, 0, 0]) {
+					linear_extrude(H1) circle(X/2);
+				}
+			}
+			translate([B-Bz, 0, L/2]) {
+				rotate([-90, 0, 0]) {
+					linear_extrude(H1) circle(X/2);
+				}
 			}
 		}
 	}
