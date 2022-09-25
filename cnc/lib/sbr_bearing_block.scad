@@ -5,6 +5,7 @@ use <../../libraries/NopSCADlib/vitamins/washer.scad>
 use <../../libraries/NopSCADlib/vitamins/linear_bearing.scad>
 use <../../libraries/NopSCADlib/vitamins/circlip.scad>
 
+
 function sbr_bearing_block_width(type) = type[3];
 function sbr_bearing_block_length(type) = type[4];
 function sbr_bearing_block_height(type) = type[5];
@@ -14,6 +15,8 @@ function sbr_bearing_screw_dia(type) = type[11];
 
 
 module sbr_bearing_block(type) {
+	vitamin(str("sbr_bearing_block(", type[0], "): SBR Bearing ", type[0]));
+
 	translate([0,
 	           -sbr_bearing_block_width(type)/2,
 	           -sbr_bearing_hole_height(type)]) {
@@ -63,7 +66,7 @@ module sbr_bearing_block_base(type) {
 				                /*11*/ [sbr_chamfer, sbr_chamfer]],
 				        convexity=10);
 				translate([sbr_W/2, hole_height, 0]) {
-					circle(bearing_dia(sbr_bearing/2));
+					circle(d=bearing_dia(sbr_bearing), $fn=50);
 				}
 			}
 		}
