@@ -1,6 +1,8 @@
 function ballscrew_mount_width(type) = type[2];
 function ballscrew_mount_height(type) = type[3];
 function ballscrew_mount_length(type) = type[6];
+function ballscrew_mount_C2(type) = type[8];
+function ballscrew_mount_P(type) = type[9];
 
 module ballscrew_mount(type) {
 	translate([ballscrew_mount_length(type),
@@ -20,8 +22,8 @@ module ballscrew_mount_base(type) {
 	E = type[5];
 	L = ballscrew_mount_length(type);
 	C1 = type[7];
-	C2 = type[8];
-	P = type[9];
+	C2 = ballscrew_mount_C2(type);
+	P = ballscrew_mount_P(type);
 	X = type[10];
 	W = type[11];
 	Y = type[12];

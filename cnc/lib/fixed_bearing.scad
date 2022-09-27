@@ -6,10 +6,14 @@ function bk_width(type) = type[8];
 function bk_hole_C1(type) = type[6];
 function bk_hole_P(type) = type[15];
 function bk_hole_diam(type) = type[17];
+function bk_ball_bearing_center(type) = type[11];
+function bk_ball_bearing_width(type) = type[20];
+function bk_rod_offset(type) = type[5];
 
 function bf_depth(type) = type[2];
 function bf_width(type) = type[3];
 function bf_hole_P(type) = type[10];
+function bf_ball_bearing_center(type) = type[6];
 function bf_ball_bearing_width(type) = type[15];
 
 function ek_depth(type) = type[2];
@@ -40,7 +44,7 @@ module vertical_hole(H1, X, Y, Z) {
 }
 
 module BKxx(type) {
-	color("DarkSlateGray") render() BKxx_base(type);
+	BKxx_base(type);
 }
 
 module BFxx(type) {
@@ -52,13 +56,13 @@ module BKxx_base(type) {
 	L = bk_depth(type);
 	L1 = type[3];
 	L2 = type[4];
-	L3 = type[5];
+	L3 = bk_rod_offset(type);
 	C1 = bk_hole_C1(type);
 	C2 = type[7];
 	B = bk_width(type);
 	H = type[9];
 	b = type[10];
-	h = type[11];
+	h = bk_ball_bearing_center(type);
 	B1 = type[12];
 	H1 = type[13];
 	E = type[14];
@@ -67,10 +71,14 @@ module BKxx_base(type) {
 	X = bk_hole_diam(type);
 	Y = type[18];
 	Z = type[19];
+	bbw = bk_ball_bearing_width(type);
+	bbd = type[21];
+
+	Z6000 = ["6000Z", d1, bbd, bbw, "silver", 1.7, 2.4];
 
 	delta = H - B1 + B1/2 - h;
 
-	color("DarkSlateGray") {
+	color("DarkSlateGray")  {
 		translate([(B-B1)/2, H-B1-delta, L]) {
 			linear_extrude(L1) {
 				difference() {
@@ -82,59 +90,62 @@ module BKxx_base(type) {
 				}
 			}
 		}
-	}
 
-	difference () {
-		linear_extrude(L) {
-			difference() {
-				polygon(points=[[0, 0],
-				                [B, 0],
-				                [B, H1],
-				                [B-(B-B1)/2, H1],
-				                [B-(B-B1)/2, H],
-				                [(B-B1)/2, H],
-				                [(B-B1)/2, H1],
-				                [0, H1]],
-				        convexity=10);
-				translate([B/2, h, 0]) {
-					circle(d1/2);
-				}
-				translate([(B-P)/2, (H1-E)/2, 0]) {
-					circle(d2/2);
-				}
-				translate([B-(B-P)/2, (H1-E)/2, 0]) {
-					circle(d2/2);
-				}
-				translate([(B-P)/2, H1-(H1-E)/2, 0]) {
-					circle(d2/2);
-				}
-				translate([B-(B-P)/2, H1-(H1-E)/2, 0]) {
-					circle(d2/2);
+		render() difference () {
+			linear_extrude(L) {
+				difference() {
+					polygon(points=[[0, 0],
+										 [B, 0],
+										 [B, H1],
+										 [B-(B-B1)/2, H1],
+										 [B-(B-B1)/2, H],
+										 [(B-B1)/2, H],
+										 [(B-B1)/2, H1],
+										 [0, H1]],
+							  convexity=10);
+					translate([B/2, h, 0]) {
+						circle(bbd/2);
+					}
+					translate([(B-P)/2, (H1-E)/2, 0]) {
+						circle(d2/2);
+					}
+					translate([B-(B-P)/2, (H1-E)/2, 0]) {
+						circle(d2/2);
+					}
+					translate([(B-P)/2, H1-(H1-E)/2, 0]) {
+						circle(d2/2);
+					}
+					translate([B-(B-P)/2, H1-(H1-E)/2, 0]) {
+						circle(d2/2);
+					}
 				}
 			}
-		}
 
-		translate([(B-P)/2, 0, C2]) {
-			rotate([-90, 0, 0]) {
-				vertical_hole(H1, X, Y, Z);
+			translate([(B-P)/2, 0, C2]) {
+				rotate([-90, 0, 0]) {
+					vertical_hole(H1, X, Y, Z);
+				}
 			}
-		}
-		translate([B-(B-P)/2, 0, C2]) {
-			rotate([-90, 0, 0]) {
-				vertical_hole(H1, X, Y, Z);
+			translate([B-(B-P)/2, 0, C2]) {
+				rotate([-90, 0, 0]) {
+					vertical_hole(H1, X, Y, Z);
+				}
 			}
-		}
-		translate([(B-P)/2, 0, L-C2]) {
-			rotate([-90, 0, 0]) {
-				vertical_hole(H1, X, Y, Z);
+			translate([(B-P)/2, 0, L-C2]) {
+				rotate([-90, 0, 0]) {
+					vertical_hole(H1, X, Y, Z);
+				}
 			}
-		}
-		translate([B-(B-P)/2, 0, L-C2]) {
-			rotate([-90, 0, 0]) {
-				vertical_hole(H1, X, Y, Z);
+			translate([B-(B-P)/2, 0, L-C2]) {
+				rotate([-90, 0, 0]) {
+					vertical_hole(H1, X, Y, Z);
+				}
 			}
 		}
 	}
+	translate([B/2, h, bbw/2 + L3]) ball_bearing(Z6000);
+	translate([B/2, h, bbw/2 + bbw + L3]) ball_bearing(Z6000);
+
 
 	colar1_depth = L3;
 	colar2_depth = (L+L1) - (L3 + 2 * bbw);
@@ -148,13 +159,14 @@ module BKxx_base(type) {
 	}
 }
 
+
 module BFxx_base(type) {
 	d1 = type[1];
 	L = bf_depth(type);
 	B = bf_width(type);
 	H = type[4];
 	b = type[5];
-	h = type[6];
+	h = bf_ball_bearing_center(type);
 	B1 = type[7];
 	H1 = type[8];
 	E = type[9];
@@ -174,8 +186,7 @@ module BFxx_base(type) {
 
 	Z6000 = ["6000Z", d1, bbd, bbw, "silver", 1.7, 2.4];
 
-
-	color("DarkSlateGray") render() {
+	color("DarkSlateGray")  {
 		difference() {
 			linear_extrude(L) {
 				difference() {
