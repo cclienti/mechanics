@@ -13,6 +13,9 @@ function sbr_bearing_hole_dist(type) = type[1];
 function sbr_bearing_hole_height(type) = sbr_bearing_block_height(type) - sbr_bearing_hole_dist(type);
 function sbr_bearing_screw_dia(type) = type[11];
 
+function sbr_bearing_mount_C(type) = type[10];
+function sbr_bearing_mount_B(type) = type[9];
+
 
 module sbr_bearing_block(type) {
 	vitamin(str("sbr_bearing_block(", type[0], "): SBR Bearing ", type[0]));
@@ -35,8 +38,8 @@ module sbr_bearing_block_base(type) {
 	sbr_T = type[6];
 	sbr_h1 = type[7];
 	sbr_theta = type[8];
-	sbr_B = type[9];
-	sbr_C = type[10];
+	sbr_B = sbr_bearing_mount_B(type);
+	sbr_C = sbr_bearing_mount_C(type);
 	sbr_S = sbr_bearing_screw_dia(type);
 	sbr_l = type[12];
 	sbr_bearing = type[13];
