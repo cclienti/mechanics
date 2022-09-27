@@ -29,7 +29,7 @@ module sbr_rail(type, length=500) {
 	ra = J/h1;
 
 	color(grey(90)) render() {
-		translate([-length/2, -W/2, 0]) rotate([90, 0, 90]) {
+		translate([0, -W/2, 0]) rotate([90, 0, 90]) {
 			difference() {
 				union() {
 					linear_extrude(length) {
