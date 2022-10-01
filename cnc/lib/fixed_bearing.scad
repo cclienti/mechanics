@@ -22,6 +22,15 @@ function ef_width(type) = type[3];
 function ef_hole_P(type) = type[9];
 
 
+module BKColar(depth, outer_diam, thickness) {
+	color("darkslategray") {
+		difference() {
+			cylinder(h=depth, d=outer_diam + thickness*2, $fn=100);
+			cylinder(h=depth, r=outer_diam/2, $fn=100);
+		}
+	}
+}
+
 module vertical_hole(H1, X, Y, Z) {
 	rotate_extrude(convexity=10) {
 		polygon(points=[[0, -1], [X/2, -1], [X/2, H1-Z],
@@ -61,13 +70,15 @@ module BKxx_base(type) {
 
 	delta = H - B1 + B1/2 - h;
 
-	translate([(B-B1)/2, H-B1-delta, L]) {
-		linear_extrude(L1) {
-			difference() {
-				polygon(points=[[0,0], [0, B1], [B1, B1], [B1, 0]],
-				        convexity=10);
-				translate([B1/2, B1/2, 0])	{
-					circle(d1/2);
+	color("DarkSlateGray") {
+		translate([(B-B1)/2, H-B1-delta, L]) {
+			linear_extrude(L1) {
+				difference() {
+					polygon(points=[[0,0], [0, B1], [B1, B1], [B1, 0]],
+							  convexity=10);
+					translate([B1/2, B1/2, 0])	{
+						circle(bbd/2);
+					}
 				}
 			}
 		}
@@ -125,6 +136,16 @@ module BKxx_base(type) {
 		}
 	}
 
+	colar1_depth = L3;
+	colar2_depth = (L+L1) - (L3 + 2 * bbw);
+	colar_thickness = 1.5;
+
+	translate([B/2, h, bbw/2 + L3]) ball_bearing(Z6000);
+	translate([B/2, h, bbw/2 + bbw + L3]) ball_bearing(Z6000);
+	color("darkslategray") {
+		translate([B/2, h, 0]) BKColar(colar1_depth, d1, colar_thickness);
+		translate([B/2, h, 2*bbw + L3]) BKColar(colar2_depth, d1, colar_thickness);
+	}
 }
 
 module BFxx_base(type) {
