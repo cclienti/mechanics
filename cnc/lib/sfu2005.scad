@@ -1,6 +1,6 @@
 use <../../libraries/NopSCADlib/vitamins/rod.scad>
 
-SFU2005 = ["SFU2005", "Leadscrew nut for SFU2010",    20, 36, 42.5, 58,    10, 0,   6, 6.7,   47/2,    M6_cap_screw, 5, 10, 44, "#DFDAC5"];
+SFU2005 = ["SFU2005", "Leadscrew nut for SFU2005",    20, 36, 42.5, 58,    10, 0,   6, 6.7,   47/2,    M6_cap_screw, 5, 10, 44, "#DFDAC5"];
 
 fixed_bearing_bk_ax1 = 20;
 fixed_bearing_bk_ax2 = 40;

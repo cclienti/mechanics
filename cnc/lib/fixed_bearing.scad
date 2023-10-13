@@ -3,6 +3,7 @@ include <../../libraries/NopSCADlib/vitamins/ball_bearings.scad>
 
 function bk_depth(type) = type[2];
 function bk_width(type) = type[8];
+function bk_height(type) = type[9];
 function bk_hole_C1(type) = type[6];
 function bk_hole_P(type) = type[15];
 function bk_hole_diam(type) = type[17];
@@ -12,6 +13,7 @@ function bk_rod_offset(type) = type[5];
 
 function bf_depth(type) = type[2];
 function bf_width(type) = type[3];
+function bf_height(type) = type[4];
 function bf_hole_P(type) = type[10];
 function bf_ball_bearing_center(type) = type[6];
 function bf_ball_bearing_width(type) = type[15];
@@ -20,10 +22,12 @@ function ek_depth(type) = type[2];
 function ek_width(type) = type[6];
 function ek_hole_P(type) = type[12];
 function ek_hole_diam(type) = type[13];
+function ek_ball_bearing_center(type) = type[9];
 
 function ef_depth(type) = type[2];
 function ef_width(type) = type[3];
 function ef_hole_P(type) = type[9];
+function ek_ball_bearing_center(type) = type[6];
 
 
 module BKColar(depth, outer_diam, thickness) {
@@ -232,7 +236,7 @@ module BFxx_base(type) {
 }
 
 module EKxx(type) {
-	color("DarkSlateGray") render() EKxx_base(type);
+    EKxx_base(type);
 }
 
 module EFxx(type) {
@@ -254,49 +258,43 @@ module EKxx_base(type) {
 	P = ek_hole_P(type);
 	X = ek_hole_diam(type);
 
-	translate([(B-B1)/2, h - B1/2, L]) {
-		linear_extrude(L1) {
-			difference() {
-				polygon(points=[[0, 0], [0, B1], [B1, B1], [B1, 0]],
-				        convexity=10);
-				translate([B1/2, B1/2, 0])	{
-					circle(d1/2);
-				}
-			}
-		}
-	}
+    color("DarkSlateGray") {
+        difference () {
+            union() {
+                linear_extrude(L) {
+                    polygon(points=[[0, 0],
+                                    [B, 0],
+                                    [B, H1],
+                                    [B-(B-B1)/2, H1],
+                                    [B-(B-B1)/2, H],
+                                    [(B-B1)/2, H],
+                                    [(B-B1)/2, H1],
+                                    [0, H1]],
+                            convexity=10);
+                }
+                translate([(B-B1)/2, h - B1/2, L]) {
+                    linear_extrude(L1) {
+                        polygon(points=[[0, 0], [0, B1], [B1, B1], [B1, 0]],
+                                convexity=10);
+                    }
+                }
+            }
+            translate([B/2, h, 0]) {
+                translate([0, 0, -1]) linear_extrude(L+L1+2) circle(d1/2);
+            }
 
-	difference () {
-		linear_extrude(L) {
-			difference() {
-				polygon(points=[[0, 0],
-				                [B, 0],
-				                [B, H1],
-				                [B-(B-B1)/2, H1],
-				                [B-(B-B1)/2, H],
-				                [(B-B1)/2, H],
-				                [(B-B1)/2, H1],
-				                [0, H1]],
-				        convexity=10);
-
-				translate([B/2, h, 0]) {
-					circle(d1/2);
-				}
-			}
-		}
-
-		translate([(B-P)/2, 0, L/2]) {
-			rotate([-90, 0, 0]) {
-				linear_extrude(H1) circle(X/2);
-			}
-		}
-		translate([B-(B-P)/2, 0, L/2]) {
-			rotate([-90, 0, 0]) {
-				linear_extrude(H1) circle(X/2);
-			}
-		}
-	}
-
+            translate([(B-P)/2, -1, L/2]) {
+                rotate([-90, 0, 0]) {
+                    linear_extrude(H1+2) circle(X/2);
+                }
+            }
+            translate([B-(B-P)/2, -1, L/2]) {
+                rotate([-90, 0, 0]) {
+                    linear_extrude(H1+2) circle(X/2);
+                }
+            }
+        }
+    }
 }
 
 

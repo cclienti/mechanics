@@ -1,6 +1,7 @@
 function ballscrew_mount_width(type) = type[2];
 function ballscrew_mount_height(type) = type[3];
 function ballscrew_mount_length(type) = type[6];
+function ballscrew_mount_C1(type) = type[7];
 function ballscrew_mount_C2(type) = type[8];
 function ballscrew_mount_P(type) = type[9];
 
