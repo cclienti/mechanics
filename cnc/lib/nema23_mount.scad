@@ -9,6 +9,16 @@ module oblong_circle(diam, length) {
 }
 
 
+module nema23_mounting_hole_2d(plinth_diam=38.1, epsilon=0.1) {
+    hole_dist = 47.14/2;
+    translate([-hole_dist, -hole_dist, 0]) circle(d=5+epsilon);
+    translate([-hole_dist, +hole_dist, 0]) circle(d=5+epsilon);
+    translate([+hole_dist, +hole_dist, 0]) circle(d=5+epsilon);
+    translate([+hole_dist, -hole_dist, 0]) circle(d=5+epsilon);
+    circle(d=plinth_diam + epsilon);
+}
+
+
 module nema23_mount(adapter_thickness, bk_shaft_center) {
 	linear_extrude(adapter_thickness) {
 		difference() {
