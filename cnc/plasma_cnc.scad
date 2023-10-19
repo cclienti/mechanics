@@ -230,3 +230,12 @@ rotate([0, 0, 90]) rotate([90, 0, 90]) extrusion(E3060, slot_length-150, cornerH
 
 translate([15, slot_length/2-60, 0])
 rotate([0, 0, 90]) rotate([90, 0, 90]) extrusion(E3060, slot_length-150, cornerHole = true);
+
+translate([slot_length/4, slot_length/2-60, 0])
+rotate([0, 0, 90]) rotate([90, 0, 90]) extrusion(E3060, slot_length-150, cornerHole = true);
+
+translate([slot_length/2, slot_length/2-60, 0])
+rotate([0, 0, 90]) rotate([90, 0, 90]) extrusion(E3060, slot_length-150, cornerHole = true);
+
+translate([3*slot_length/4, slot_length/2-60, 0])
+rotate([0, 0, 90]) rotate([90, 0, 90]) extrusion(E3060, slot_length-150, cornerHole = true);
