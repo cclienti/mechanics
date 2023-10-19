@@ -14,6 +14,7 @@ include <lib/fixed_bearing_adapter.scad>
 include <lib/nema23_mount.scad>
 include <lib/torch_adapter.scad>
 include <lib/sfu2005.scad>
+include <metal_support.scad>
 
 use <../libraries/NopSCADlib/vitamins/rod.scad>
 
@@ -29,7 +30,7 @@ nema_coupler_length = 30;
 slot_length = rod_length + 15; //nema_coupler_length - 15;
 sbr_offset = 25;
 leg_height = 350;
-cart_x_pos = 10; //820;
+cart_x_pos = 20; //820;
 sbr_inter_space = 5;
 
 
@@ -239,3 +240,8 @@ rotate([0, 0, 90]) rotate([90, 0, 90]) extrusion(E3060, slot_length-150, cornerH
 
 translate([3*slot_length/4, slot_length/2-60, 0])
 rotate([0, 0, 90]) rotate([90, 0, 90]) extrusion(E3060, slot_length-150, cornerHole = true);
+
+
+
+
+translate([0, 30, 30]) metal_support(slot_length, slot_length-180, 40, 50, 2);
