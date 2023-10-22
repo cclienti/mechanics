@@ -2,6 +2,7 @@ include <ballscrew_mounts.scad>
 include <fixed_bearings.scad>
 include <sbr_bearing_blocks.scad>
 include <nema23_mount.scad>
+include <sbr_rails.scad>
 
 
 module leg_base(height, sbr_inter_space, thickness) {
