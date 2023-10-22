@@ -13,7 +13,7 @@ function render() {
 }
 EOF
 
-    openscad -q plasma_cnc.scad \
+    openscad -q ../plasma_cnc.scad \
              -p animated/animate_$1.json \
              -P step \
              --imgsize=1920,800 \

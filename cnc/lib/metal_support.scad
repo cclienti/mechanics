@@ -1,4 +1,3 @@
-
 module sector(radius, angle, fn = 24) {
     r = radius / cos(180 / fn);
     step = -360 / fn;
