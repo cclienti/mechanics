@@ -23,8 +23,7 @@ module nema23_mount(adapter_thickness, bk_shaft_center) {
 	linear_extrude(adapter_thickness) {
 		difference() {
 			polygon(points=[[0, 0], [120, 0], [120, 100],
-			                [0, 100]],
-			        convexity=10);
+			                [0, 100]]);
 			// Slot profile hole
 			translate([15, 15, 0]) circle(3);
 			translate([45, 15, 0]) circle(3);
