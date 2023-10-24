@@ -45,8 +45,7 @@ module leg_base(height, sbr_inter_space, thickness) {
                                     [sbr16uu_dist, 0],
                                     [sbr16uu_dist, height-30],
                                     [sbr16uu_dist-30, height],
-                                    [0, height]],
-                            convexity=10);
+                                    [0, height]]);
                     translate([sbr1_min_x_hole, sbr_min_y_hole, 0]) {
                         translate([0,           0,           0]) circle(d=sbr_screw_dia);
                         translate([sbr_mount_C, 0,           0]) circle(d=sbr_screw_dia);
@@ -66,11 +65,11 @@ module leg_base(height, sbr_inter_space, thickness) {
                         translate([dsg_mount_C2, dsg_mount_P, 0]) circle(d=sbr_screw_dia);
                     }
                     translate([15, height-15]) {
-                        translate([0,   0, 0]) circle(d=sbr_screw_dia);
-                        translate([0, -30, 0]) circle(d=sbr_screw_dia);
-                        translate([0, -sbr_pos_z, 0]) circle(d=sbr_screw_dia);
-                        translate([0, -sbr_pos_z-30, 0]) circle(d=sbr_screw_dia);
-                        translate([0, -sbr_pos_z-60, 0]) circle(d=sbr_screw_dia);
+                        translate([0,   0, 0]) circle(d=8);
+                        translate([0, -30, 0]) circle(d=8);
+                        translate([0, -sbr_pos_z, 0]) circle(d=8);
+                        translate([0, -sbr_pos_z-30, 0]) circle(d=8);
+                        translate([0, -sbr_pos_z-60, 0]) circle(d=8);
                         translate([15 + bk_center, -30 - bk_hole_dist/2, 0])
                             nema23_mounting_hole_2d(plinth_diam = 38.1, epsilon = 0.1);
                     }
