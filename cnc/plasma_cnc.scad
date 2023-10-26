@@ -16,6 +16,7 @@ include <lib/sfu2005.scad>
 include <lib/metal_support.scad>
 include <lib/plate.scad>
 include <lib/leg.scad>
+include <lib/torche.scad>
 
 use <../libraries/NopSCADlib/vitamins/rod.scad>
 
@@ -31,7 +32,7 @@ nema_coupler_length = 30;
 slot_length = rod_length + 15; //nema_coupler_length - 15;
 sbr_offset = 25;
 leg_height = 350;
-cart_x_pos = 20; //820;
+cart_x_pos = 50; //30 - 800;
 sbr_inter_space = 5;
 
 
@@ -90,6 +91,16 @@ module cnc_axis(slot_length, rod_length, cart_pos, sbr_inter_space=5, center_nut
 
 }
 
+module torche_translate(cart_pos, slot_length, sbr_inter_space=5) {
+    sbr_offset = sbr_rail_rod_center_height(SBR16RAIL)+sbr_bearing_hole_dist(SBR16UU);
+    sbr_length = sbr_bearing_block_length(SBR16UU);
+    torche_y_offset = sbr_offset + 30 + 35/2 + bf_depth(BF12);
+    torche_x_offset = sbr_offset + 15 + bf_depth(BF12) + sbr_length + sbr_inter_space / 2;
+
+    translate([cart_pos + torche_y_offset, slot_length - cart_pos - torche_x_offset, 80]) torche_AT_70();
+
+}
+
 
 cnc_axis(slot_length, rod_length, cart_x_pos, sbr_inter_space, false);
 translate([cart_x_pos, 0, 0]) leg();
@@ -123,4 +134,6 @@ rotate([0, 0, 90]) rotate([90, 0, 90]) extrusion(E3060, slot_length-150, cornerH
 translate([3*slot_length/4, slot_length/2-60, 0])
 rotate([0, 0, 90]) rotate([90, 0, 90]) extrusion(E3060, slot_length-150, cornerHole = true);
 
-translate([0, 30, 30]) metal_support(slot_length, slot_length-180, 40, 50, 2);
+translate([0, 40, 30]) metal_support(slot_length, slot_length-210, 40, 50, 2);
+
+torche_translate(cart_x_pos, slot_length);
