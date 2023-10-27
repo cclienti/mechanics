@@ -17,6 +17,7 @@ include <lib/metal_support.scad>
 include <lib/plate.scad>
 include <lib/leg.scad>
 include <lib/torche.scad>
+include <lib/z_axis.scad>
 
 use <../libraries/NopSCADlib/vitamins/rod.scad>
 
@@ -91,13 +92,17 @@ module cnc_axis(slot_length, rod_length, cart_pos, sbr_inter_space=5, center_nut
 
 }
 
-module torche_translate(cart_pos, slot_length, sbr_inter_space=5) {
+module torche_translate(cart_pos, slot_length, leg_height, sbr_inter_space=5) {
+    sbr_pos_z = bk_hole_P(BK12) + 30;
     sbr_offset = sbr_rail_rod_center_height(SBR16RAIL)+sbr_bearing_hole_dist(SBR16UU);
     sbr_length = sbr_bearing_block_length(SBR16UU);
-    torche_y_offset = sbr_offset + 30 + 35/2 + bf_depth(BF12);
+    torche_y_offset = sbr_offset + 30 + bf_depth(BF12);
     torche_x_offset = sbr_offset + 15 + bf_depth(BF12) + sbr_length + sbr_inter_space / 2;
 
-    translate([cart_pos + torche_y_offset, slot_length - cart_pos - torche_x_offset, 80]) torche_AT_70();
+    translate([cart_pos + torche_y_offset, slot_length - cart_pos - torche_x_offset-40, leg_height-160]) {
+        rotate([0, 90, 0]) z_axis(50);
+        //translate([35/2 + 56, 0, 0]) torche_AT_70();
+    }
 
 }
 
@@ -136,4 +141,4 @@ rotate([0, 0, 90]) rotate([90, 0, 90]) extrusion(E3060, slot_length-150, cornerH
 
 translate([0, 40, 30]) metal_support(slot_length, slot_length-210, 40, 50, 2);
 
-torche_translate(cart_x_pos, slot_length);
+torche_translate(cart_x_pos, slot_length, leg_height);
