@@ -28,14 +28,15 @@ module z_axis_plate() {
             difference() {
                 polygon(points=[[0, 0],
                                 [80, 0],
-                                [80, 56],
-                                [0, 56]]);
+                                [80, 53],
+                                [77, 56],
+                                [3, 56],
+                                [0, 53]]);
                 translate([40, 40]) circle(r=6);
                 translate([10, 10]) circle(r=4);
                 translate([30, 10]) circle(r=4);
                 translate([50, 10]) circle(r=4);
                 translate([70, 10]) circle(r=4);
-
             }
         }
     }
@@ -76,7 +77,7 @@ module z_axis_nut() {
 
 module z_axis(pos) {
     extrude_length = 190;
-    translate([-extrude_length-10, 0, 0]) {
+    translate([-extrude_length-10, -40, 0]) {
         translate([26, 0, 20]) z_axis_bearing();
 
         translate([24+16+10+pos, 0, 24]) z_axis_nut();
@@ -91,8 +92,8 @@ module z_axis(pos) {
         translate([extrude_length/2 + 10, 40, 10]) {
             rotate([0, -90, 180]) {
                 translate([-10, 40, -extrude_length/2 - 10]) rotate([0, 0, -90]) z_axis_motor_plate();
-                translate([-10, 40, extrude_length/2]) rotate([0, 0, -90]) z_axis_plate();
                 extrusion(E2080, extrude_length, cornerHole = true);
+                translate([-10, 40, extrude_length/2]) rotate([0, 0, -90]) z_axis_plate();
             }
         }
     }
