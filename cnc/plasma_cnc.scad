@@ -18,6 +18,7 @@ include <lib/plate.scad>
 include <lib/leg.scad>
 include <lib/torche.scad>
 include <lib/z_axis.scad>
+include <lib/z_axis_mounting_plate.scad>
 
 use <../libraries/NopSCADlib/vitamins/rod.scad>
 
@@ -91,77 +92,6 @@ module cnc_axis(slot_length, rod_length, cart_pos, sbr_inter_space=5, center_nut
 	}
 
 }
-
-module z_axis_mounting_plate_base(y_offset=25, thickness=8, sbr_length, sbr_interspace=5, sbr_screw_dia=5) {
-    sbr_length = sbr_bearing_block_length(SBR16UU);
-    sbr_width =  sbr_bearing_block_width(SBR16UU);
-    sbr_mount_C = sbr_bearing_mount_C(SBR16UU);
-    sbr_mount_B = sbr_bearing_mount_B(SBR16UU);
-    sbr_x_hole_offset = (sbr_length - sbr_mount_C) / 2;
-	sbr_pos_z = bk_hole_P(BK12) + 30;
-	sbr1_min_x_hole = sbr_x_hole_offset;
-    sbr2_min_x_hole = sbr_x_hole_offset + sbr_inter_space + sbr_length;
-	sbr_min_y_hole = (sbr_bearing_block_width(SBR16UU) - sbr_mount_B)/2 + y_offset;
-
-	dsg_length = ballscrew_mount_length(DSG16HH);
-	dsg_mount_C2 = ballscrew_mount_C2(DSG16HH);
-	dsg_mount_P = ballscrew_mount_P(DSG16HH);
-
-    dsg_min_y_hole = y_offset + sbr_width / 2 + bk_hole_P(BK12)/2 + 45 - dsg_mount_P/2;
-
-    plate_height = 190;
-    plate_width = 2 * sbr_length + sbr_interspace;
-
-    color([0, 0.5, 0.8, 0.5]) {
-        translate([-thickness, -plate_width/2, 0])
-            rotate([90, 0, 90]) {
-            linear_extrude(thickness) {
-                difference() {
-                    polygon(points=[[0, 0],
-                                    [plate_width, 0],
-                                    [plate_width, plate_height],
-                                    [0, plate_height]]);
-                    translate([sbr1_min_x_hole, sbr_min_y_hole, 0]) {
-                        translate([0,           0,           0]) circle(d=sbr_screw_dia);
-                        translate([sbr_mount_C, 0,           0]) circle(d=sbr_screw_dia);
-                        translate([0,           sbr_mount_B, 0]) circle(d=sbr_screw_dia);
-                        translate([sbr_mount_C, sbr_mount_B, 0]) circle(d=sbr_screw_dia);
-                    }
-                    translate([sbr2_min_x_hole, sbr_min_y_hole, 0]) {
-                        translate([0,           0,           0]) circle(d=sbr_screw_dia);
-                        translate([sbr_mount_C, 0,           0]) circle(d=sbr_screw_dia);
-                        translate([0,           sbr_mount_B, 0]) circle(d=sbr_screw_dia);
-                        translate([sbr_mount_C, sbr_mount_B, 0]) circle(d=sbr_screw_dia);
-                    }
-                    translate([plate_width/2 - dsg_mount_C2/2, dsg_min_y_hole, 0]) {
-                        translate([0,            0,           0]) circle(d=sbr_screw_dia);
-                        translate([dsg_mount_C2, 0,           0]) circle(d=sbr_screw_dia);
-                        translate([0,            dsg_mount_P, 0]) circle(d=sbr_screw_dia);
-                        translate([dsg_mount_C2, dsg_mount_P, 0]) circle(d=sbr_screw_dia);
-                    }
-                    translate([plate_width/2, y_offset/2]) {
-                        translate([-30, 0]) circle(d=5);
-                        translate([-10, 0]) circle(d=5);
-                        translate([ 10, 0]) circle(d=5);
-                        translate([ 30, 0]) circle(d=5);
-                    }
-                    translate([plate_width/2, plate_height - y_offset/2]) {
-                        translate([-30, 0]) circle(d=5);
-                        translate([-10, 0]) circle(d=5);
-                        translate([ 10, 0]) circle(d=5);
-                        translate([ 30, 0]) circle(d=5);
-                    }
-                }
-            }
-        }
-    }
-}
-
-module z_axis_mounting_plate() {
-    sbr_length = sbr_bearing_block_length(SBR16UU);
-    z_axis_mounting_plate_base(25, 8, sbr_length, 5);
-}
-
 
 module torche_translate(cart_pos, slot_length, leg_height, sbr_inter_space=5, mounting_plate_width=8) {
     plate_offset = 25;
