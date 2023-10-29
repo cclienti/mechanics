@@ -108,7 +108,7 @@ module torche_translate(cart_pos, slot_length, leg_height, sbr_inter_space=5, mo
     translate([cart_pos + x_offset + mounting_plate_width,
                slot_length - cart_pos - y_offset,
                leg_height-183.5]) {
-        rotate([0, 90, 0]) z_axis(20);
+        //rotate([0, 90, 0]) z_axis(20);
         //translate([35/2 + 56, 0, 0]) torche_AT_70();
     }
 
