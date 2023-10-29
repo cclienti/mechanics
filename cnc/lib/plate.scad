@@ -18,13 +18,12 @@ module plate_base(thickness, sbr_screw_dia=6) {
             difference() {
                 polygon(points=[[0, 0],
                                 [plate_width1, 0],
-                                [plate_width1, plate_height1], //-10],
-                                //[plate_width1-10, plate_height1],
+                                [plate_width1, plate_height1-10],
+                                [plate_width1-10, plate_height1],
                                 [plate_width2, plate_height1],
                                 [plate_width2, plate_height2],
-                                /*[20,*/ [0, plate_height2],
-                                //[0, plate_height2-20],
-                                [0, plate_height2]
+                                [20, plate_height2],
+                                [0, plate_height2-20],
                                 ]);
                 translate([plate_width2-15,  15,           0]) circle(d=8);
                 translate([plate_width2-15,  45,           0]) circle(d=8);
