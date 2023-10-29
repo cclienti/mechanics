@@ -9,3 +9,4 @@ function convert {
 convert leg
 convert plate
 convert z_axis_mounting_plate
+convert torche_adapter
