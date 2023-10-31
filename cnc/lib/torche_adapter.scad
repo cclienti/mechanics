@@ -29,5 +29,5 @@ module torche_adapter_base(thickness, width=90, length=120) {
 
 
 module torche_adapter() {
-    rotate([0, 90, 0]) torche_adapter_base(8, 90, 120);
+    rotate([0, 90, 0]) torche_adapter_base(8, 90, 130);
 }
