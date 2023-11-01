@@ -1,5 +1,14 @@
 #!/bin/bash
 
+function chaser() {
+    python - << EOF
+max_pos=50
+if (${1} // max_pos) & 1 == 1:
+    print(max_pos - ${1} % max_pos)
+else:
+    print(${1} % max_pos)
+EOF
+}
 
 function render() {
     echo "Rendering $1"
@@ -7,7 +16,8 @@ function render() {
 {
     "parameterSets": {
         "step": {
-	        "cart_x_pos": "$1"
+	        "cart_x_pos": "$1",
+	        "cart_z_pos": "$2"
         }
     }
 }
@@ -23,7 +33,5 @@ EOF
     rm -rf animated/animate_$1.json
 }
 
-
 mkdir -p animated
-
-render $1
+render $1 $(chaser $1)
