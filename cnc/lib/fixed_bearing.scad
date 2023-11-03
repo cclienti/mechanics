@@ -2,6 +2,7 @@ include <../../libraries/NopSCADlib/core.scad>
 include <../../libraries/NopSCADlib/vitamins/ball_bearings.scad>
 
 function bk_depth(type) = type[2];
+function bk_full_depth(type) = type[2] + type[3];
 function bk_width(type) = type[8];
 function bk_height(type) = type[9];
 function bk_hole_C1(type) = type[6];

@@ -69,7 +69,7 @@ module sbr_bearing_block_base(type) {
 				                /*11*/ [sbr_chamfer, sbr_chamfer]],
 				        convexity=10);
 				translate([sbr_W/2, hole_height, 0]) {
-					circle(d=bearing_dia(sbr_bearing), $fn=50);
+					circle(d=bearing_dia(sbr_bearing));
 				}
 			}
 		}
