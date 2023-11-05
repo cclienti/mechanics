@@ -14,10 +14,15 @@ include <../cnc/lib/ballscrew_mounts.scad>
 include <../cnc/lib/sbr_rails.scad>
 include <../cnc/lib/sbr_bearing_blocks.scad>
 
+include <lib/layer_y_to_x.scad>
+
 
 LAYER_Y_DEPTH = 300;
 LAYER_Y_SCREW_OFFSET = 15-6;  //E3030/4 - 6mm (C2 in BK12 datasheet)
-Y_POS = 120;  // 0 to 129
+Y_POS = 0;  // 0 to 129
+
+Y_TO_X_PLATE_OFFSET = (LAYER_Y_SCREW_OFFSET + bk_full_depth(BK12) -
+                       sbr_bearing_block_length(SBR16UU)/3 + Y_POS);
 
 
 module layer_y_strong_guide(length, pos, max_space=125) {
@@ -33,7 +38,7 @@ module layer_y_strong_guide(length, pos, max_space=125) {
 
     rotate([0, 0, 90]) sbr_rail(RAIL_TYPE, length);
 
-    translate([0, pos+LAYER_Y_SCREW_OFFSET+BK_DEPTH-BB_LENGTH/3, 0]) {
+    translate([0, Y_TO_X_PLATE_OFFSET, 0]) {
         translate([0, BB_LENGTH/2, RAIL_OFFSET]) {
             rotate([0, 0, 90]) sbr_bearing_block(BB_TYPE);
         }
@@ -44,7 +49,7 @@ module layer_y_strong_guide(length, pos, max_space=125) {
 }
 
 module layer_y_screw(length, pos, max_space=125) {
-    SFU_LENGTH = 250;
+    SFU_LENGTH = 280;
     BF_TYPE = BF12;
     BF_WIDTH = bf_width(BF_TYPE);
     BF_DEPTH = bf_depth(BF_TYPE);
@@ -125,7 +130,6 @@ module layer_y_frame(length) {
     }
 }
 
-
 translate([  0, 0, 0]) layer_y_strong_guide(LAYER_Y_DEPTH, Y_POS);
 translate([200, 0, 0]) layer_y_strong_guide(LAYER_Y_DEPTH, Y_POS);
 translate([400, 0, 0]) layer_y_strong_guide(LAYER_Y_DEPTH, Y_POS);
@@ -136,3 +140,6 @@ translate([300, 0, 0]) layer_y_screw(LAYER_Y_DEPTH, Y_POS);
 
 
 color("LightBlue") layer_y_frame(LAYER_Y_DEPTH);
+
+
+translate([-30, Y_TO_X_PLATE_OFFSET, 45]) layer_y_to_x();
