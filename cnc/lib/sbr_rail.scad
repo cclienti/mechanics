@@ -45,9 +45,11 @@ module sbr_rail(type, length=500) {
 					translate([W/2, H, 0]) rod(DIA, length, center=false);
 				}
 
-				for (i = [N : P : length]) {
-					translate([WB2, T, i]) rotate([90, 0, 0]) cylinder(T*2, S1/2, S1/2);
-					translate([W-WB2, T, i]) rotate([90, 0, 0]) cylinder(T*2, S1/2, S1/2);
+				for (i = [P/2 : P : length/2]) {
+					translate([WB2, T, length/2-i]) rotate([90, 0, 0]) cylinder(T*2, S1/2, S1/2);
+					translate([WB2, T, length/2+i]) rotate([90, 0, 0]) cylinder(T*2, S1/2, S1/2);
+					translate([W-WB2, T, length/2-i]) rotate([90, 0, 0]) cylinder(T*2, S1/2, S1/2);
+					translate([W-WB2, T, length/2+i]) rotate([90, 0, 0]) cylinder(T*2, S1/2, S1/2);
 				}
 			}
 		}
