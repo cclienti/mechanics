@@ -19,7 +19,7 @@ include <lib/layer_y_to_x.scad>
 
 LAYER_Y_DEPTH = 300;
 LAYER_Y_SCREW_OFFSET = 15-6;  //E3030/4 - 6mm (C2 in BK12 datasheet)
-Y_POS = 0;  // 0 to 129
+Y_POS = 129;  // 0 to 129
 
 Y_TO_X_PLATE_OFFSET = (LAYER_Y_SCREW_OFFSET + bk_full_depth(BK12) -
                        sbr_bearing_block_length(SBR16UU)/3 + Y_POS);
@@ -49,7 +49,7 @@ module layer_y_strong_guide(length, pos, max_space=125) {
 }
 
 module layer_y_screw(length, pos, max_space=125) {
-    SFU_LENGTH = 280;
+    SFU_LENGTH = 250;
     BF_TYPE = BF12;
     BF_WIDTH = bf_width(BF_TYPE);
     BF_DEPTH = bf_depth(BF_TYPE);
@@ -64,7 +64,7 @@ module layer_y_screw(length, pos, max_space=125) {
 
     SFU_OFFSET = SFU_LENGTH-fixed_bearing_bk_offset+BK_DEPTH;
 
-    echo("usable rod length",
+    echo("usable Y rod length",
          SFU_LENGTH-(fixed_bearing_bf_ax+fixed_bearing_bk_offset+bf_ball_bearing_width(BF_TYPE)/2));
 
     translate([-BF_WIDTH/2, SFU_OFFSET+BF_DEPTH-BF_Y_OFFSET+LAYER_Y_SCREW_OFFSET, 0]) {
@@ -130,16 +130,48 @@ module layer_y_frame(length) {
     }
 }
 
+
+module layer_x_strong_guide(max_space=300, layer_width=125) {
+    SFU_LENGTH = 550;
+    BF_TYPE = BF12;
+    BF_WIDTH = bf_width(BF_TYPE);
+    BF_DEPTH = bf_depth(BF_TYPE);
+    BF_Z_OFFSET = bf_ball_bearing_center(BF_TYPE);
+    BF_X_OFFSET = fixed_bearing_bf_ax+(BF_DEPTH-bf_ball_bearing_width(BF_TYPE))/2; //used for the rod
+
+    BK_TYPE = BK12;
+    BK_WIDTH = bk_width(BK_TYPE);
+    BK_DEPTH = bk_full_depth(BK_TYPE);
+
+    DSG_LENGTH = ballscrew_mount_length(DSG16HH);
+
+    SFU_OFFSET = SFU_LENGTH-fixed_bearing_bk_offset+BK_DEPTH;
+
+    translate([30, Y_TO_X_PLATE_OFFSET, 0]) sbr_rail(SBR16RAIL, 600);
+    translate([30, Y_TO_X_PLATE_OFFSET+layer_width, 0]) sbr_rail(SBR16RAIL, 600);
+    translate([0, Y_TO_X_PLATE_OFFSET+layer_width/2, BF_Z_OFFSET])  {
+        translate([SFU_LENGTH, 0, 0]) {
+            rotate([0, 0, 180]) sfu1605(SFU_LENGTH);
+            translate([-BF_X_OFFSET, -BF_WIDTH/2, -BF_Z_OFFSET]) rotate([90, 0, 90]) {
+                BFxx(BF_TYPE);
+            }
+        }
+        translate([fixed_bearing_bk_offset-BK_DEPTH, -BK_WIDTH/2, -BF_Z_OFFSET]) rotate([90, 0, 90]) {
+            BKxx(BK_TYPE);
+        }
+    }
+
+}
+
 translate([  0, 0, 0]) layer_y_strong_guide(LAYER_Y_DEPTH, Y_POS);
 translate([200, 0, 0]) layer_y_strong_guide(LAYER_Y_DEPTH, Y_POS);
 translate([400, 0, 0]) layer_y_strong_guide(LAYER_Y_DEPTH, Y_POS);
 translate([600, 0, 0]) layer_y_strong_guide(LAYER_Y_DEPTH, Y_POS);
 
-
 translate([300, 0, 0]) layer_y_screw(LAYER_Y_DEPTH, Y_POS);
-
 
 color("LightBlue") layer_y_frame(LAYER_Y_DEPTH);
 
-
 translate([-30, Y_TO_X_PLATE_OFFSET, 45]) layer_y_to_x();
+
+translate([0, 0, 45+6]) layer_x_strong_guide();

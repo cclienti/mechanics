@@ -16,10 +16,10 @@ module layer_y_to_x_base(width, length, thickness=6) {
 
 
 module layer_y_to_x() {
-    width=125;
+    width=125+45;
     length=660;
 
-    translate([0, width/2, 0]) {
+    translate([0, width/2-45/2, 0]) {
         rotate([0, 90, 0]) {
             layer_y_to_x_base(width, length);
         }
