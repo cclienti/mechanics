@@ -19,7 +19,7 @@ include <lib/layer_y_to_x.scad>
 
 LAYER_Y_DEPTH = 300;
 LAYER_Y_SCREW_OFFSET = 15-6;  //E3030/4 - 6mm (C2 in BK12 datasheet)
-Y_POS = 129;  // 0 to 129
+Y_POS = 120;  // 0 to 129
 
 Y_TO_X_PLATE_OFFSET = (LAYER_Y_SCREW_OFFSET + bk_full_depth(BK12) -
                        sbr_bearing_block_length(SBR16UU)/3 + Y_POS);
@@ -131,7 +131,7 @@ module layer_y_frame(length) {
 }
 
 
-module layer_x_strong_guide(max_space=300, layer_width=125) {
+module layer_x_strong_guide(max_space=300, x_offset=-5, bk_x_offset=2.5, layer_width=125) {
     SFU_LENGTH = 550;
     BF_TYPE = BF12;
     BF_WIDTH = bf_width(BF_TYPE);
@@ -147,20 +147,21 @@ module layer_x_strong_guide(max_space=300, layer_width=125) {
 
     SFU_OFFSET = SFU_LENGTH-fixed_bearing_bk_offset+BK_DEPTH;
 
-    translate([30, Y_TO_X_PLATE_OFFSET, 0]) sbr_rail(SBR16RAIL, 600);
-    translate([30, Y_TO_X_PLATE_OFFSET+layer_width, 0]) sbr_rail(SBR16RAIL, 600);
-    translate([0, Y_TO_X_PLATE_OFFSET+layer_width/2, BF_Z_OFFSET])  {
-        translate([SFU_LENGTH, 0, 0]) {
-            rotate([0, 0, 180]) sfu1605(SFU_LENGTH);
-            translate([-BF_X_OFFSET, -BF_WIDTH/2, -BF_Z_OFFSET]) rotate([90, 0, 90]) {
-                BFxx(BF_TYPE);
+    translate([x_offset, 0, 0]) {
+        translate([30, Y_TO_X_PLATE_OFFSET, 0]) sbr_rail(SBR16RAIL, 600);
+        translate([30, Y_TO_X_PLATE_OFFSET+layer_width, 0]) sbr_rail(SBR16RAIL, 600);
+        translate([bk_x_offset, Y_TO_X_PLATE_OFFSET+layer_width/2, BF_Z_OFFSET])  {
+            translate([SFU_LENGTH, 0, 0]) {
+                rotate([0, 0, 180]) sfu1605(SFU_LENGTH);
+                translate([-BF_X_OFFSET, -BF_WIDTH/2, -BF_Z_OFFSET]) rotate([90, 0, 90]) {
+                    BFxx(BF_TYPE);
+                }
+            }
+            translate([fixed_bearing_bk_offset-BK_DEPTH, -BK_WIDTH/2, -BF_Z_OFFSET]) rotate([90, 0, 90]) {
+                BKxx(BK_TYPE);
             }
         }
-        translate([fixed_bearing_bk_offset-BK_DEPTH, -BK_WIDTH/2, -BF_Z_OFFSET]) rotate([90, 0, 90]) {
-            BKxx(BK_TYPE);
-        }
     }
-
 }
 
 translate([  0, 0, 0]) layer_y_strong_guide(LAYER_Y_DEPTH, Y_POS);
