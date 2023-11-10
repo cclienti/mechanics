@@ -6,6 +6,7 @@ function bk_full_depth(type) = type[2] + type[3];
 function bk_width(type) = type[8];
 function bk_height(type) = type[9];
 function bk_hole_C1(type) = type[6];
+function bk_hole_C2(type) = type[7];
 function bk_hole_P(type) = type[15];
 function bk_hole_diam(type) = type[17];
 function bk_ball_bearing_center(type) = type[11];
