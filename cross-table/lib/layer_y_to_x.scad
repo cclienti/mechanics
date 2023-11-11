@@ -5,6 +5,8 @@ include <../../cnc/lib/fixed_bearings.scad>
 include <../../cnc/lib/sfu1605.scad>
 
 
+
+
 module layer_y_to_x_base(width, length, sbr16uu_max_space=125, thickness=6) {
     BB_TYPE = SBR16UU;
     BB_LENGTH = sbr_bearing_block_length(BB_TYPE);
@@ -99,15 +101,36 @@ module layer_y_to_x_base(width, length, sbr16uu_max_space=125, thickness=6) {
     }
 }
 
+module rounding_plate(diam, thickness) {
+	difference() {
+		translate([diam/2, diam/2, 0]) {
+			cube(size=[diam, diam, thickness], center=true);
+		}
+		cylinder(thickness*2, diam/2, diam/2, center=true);
+	}
+}
+
+
 
 module layer_y_to_x() {
+    round_radius=15;
     extra_width=50;
     width=125+extra_width;
     length=660;
 
-    translate([0, width/2-extra_width/2, 0]) {
-        rotate([0, 90, 0]) {
-            layer_y_to_x_base(width, length);
+    difference() {
+        translate([0, width/2-extra_width/2, 0]) {
+            rotate([0, 90, 0]) {
+                layer_y_to_x_base(width, length);
+            }
         }
+        translate([round_radius/2,        -extra_width/2+round_radius/2,      0])
+            rotate([0, 0, 180]) rounding_plate(round_radius, 20);
+        translate([length-round_radius/2, -extra_width/2+round_radius/2,      0])
+            rotate([0, 0, -90]) rounding_plate(round_radius, 20);
+        translate([round_radius/2,        width-extra_width/2-round_radius/2, 0])
+            rotate([0, 0,  90]) rounding_plate(round_radius, 20);
+        translate([length-round_radius/2, width-extra_width/2-round_radius/2, 0])
+            rotate([0, 0,   0]) rounding_plate(round_radius, 20);
     }
 }
