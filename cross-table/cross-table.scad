@@ -150,8 +150,8 @@ module layer_x_strong_guide(max_space=300, x_offset=-5, bk_x_offset=2.5, layer_w
     SFU_OFFSET = SFU_LENGTH-fixed_bearing_bk_offset+BK_DEPTH;
 
     translate([x_offset, 0, 0]) {
-        translate([30, Y_TO_X_PLATE_OFFSET, 0]) sbr_rail(SBR16RAIL, 600);
-        translate([30, Y_TO_X_PLATE_OFFSET+layer_width, 0]) sbr_rail(SBR16RAIL, 600);
+        translate([30-50, Y_TO_X_PLATE_OFFSET, 0]) sbr_rail(SBR16RAIL, 650);
+        translate([30-50, Y_TO_X_PLATE_OFFSET+layer_width, 0]) sbr_rail(SBR16RAIL, 650);
         translate([bk_x_offset, Y_TO_X_PLATE_OFFSET+layer_width/2, BF_Z_OFFSET])  {
             translate([SFU_LENGTH, 0, 0]) {
                 rotate([0, 0, 180]) sfu1605(SFU_LENGTH);

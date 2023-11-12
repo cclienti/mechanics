@@ -71,11 +71,11 @@ module layer_y_to_x_base(width, length, sbr16uu_max_space=125, thickness=6) {
                         }
                         // Holes for SBR16 rails
                         for (i = [0 : 4]) {
-                            translate([width-10, length-5-75]) {
+                            translate([width-10, length-5-75-25]) {
                                 translate([  0, -i*150]) circle(d=5);
                                 translate([-30, -i*150]) circle(d=5);
                             }
-                            translate([10, length-5-75]) {
+                            translate([10, length-5-75-25]) {
                                 translate([ 0, -i*150]) circle(d=5);
                                 translate([30, -i*150]) circle(d=5);
                             }
