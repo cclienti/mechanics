@@ -22,6 +22,7 @@ include <lib/drill_press_plate.scad>
 LAYER_Y_DEPTH = 300;
 LAYER_Y_SCREW_OFFSET = 15-6;  //E3030/4 - 6mm (C2 in BK12 datasheet)
 Y_POS = 120;  // 0 to 129
+X_POS = 300;  // 0 to 300
 
 Y_TO_X_PLATE_OFFSET = (LAYER_Y_SCREW_OFFSET + bk_full_depth(BK12) -
                        sbr_bearing_block_length(SBR16UU)/3 + Y_POS);
@@ -133,7 +134,8 @@ module layer_y_frame(length) {
 }
 
 
-module layer_x_strong_guide(max_space=300, x_offset=-5, bk_x_offset=2.5, layer_width=125) {
+module layer_x_strong_guide(x_pos=150, max_space=300, x_offset=-5, bk_x_offset=2.5, layer_width=125) {
+    RAIL_LENGTH = 650;
     SFU_LENGTH = 550;
     BF_TYPE = BF12;
     BF_WIDTH = bf_width(BF_TYPE);
@@ -145,13 +147,15 @@ module layer_x_strong_guide(max_space=300, x_offset=-5, bk_x_offset=2.5, layer_w
     BK_WIDTH = bk_width(BK_TYPE);
     BK_DEPTH = bk_full_depth(BK_TYPE);
 
+    BB_LENGTH = sbr_bearing_block_length(SBR16UU);
+
     DSG_LENGTH = ballscrew_mount_length(DSG16HH);
 
     SFU_OFFSET = SFU_LENGTH-fixed_bearing_bk_offset+BK_DEPTH;
 
     translate([x_offset, 0, 0]) {
-        translate([30-50, Y_TO_X_PLATE_OFFSET, 0]) sbr_rail(SBR16RAIL, 650);
-        translate([30-50, Y_TO_X_PLATE_OFFSET+layer_width, 0]) sbr_rail(SBR16RAIL, 650);
+        translate([30-50, Y_TO_X_PLATE_OFFSET, 0]) sbr_rail(SBR16RAIL, RAIL_LENGTH);
+        translate([30-50, Y_TO_X_PLATE_OFFSET+layer_width, 0]) sbr_rail(SBR16RAIL, RAIL_LENGTH);
         translate([bk_x_offset, Y_TO_X_PLATE_OFFSET+layer_width/2, BF_Z_OFFSET])  {
             translate([SFU_LENGTH, 0, 0]) {
                 rotate([0, 0, 180]) sfu1605(SFU_LENGTH);
@@ -159,6 +163,17 @@ module layer_x_strong_guide(max_space=300, x_offset=-5, bk_x_offset=2.5, layer_w
                     BFxx(BF_TYPE);
                 }
             }
+            translate([RAIL_LENGTH/2-150+x_pos, 0, 0]) {
+                rotate([0, 90, 0]) leadnut(SFU1610);
+                rotate([180, 180, 0]) ballscrew_mount(DSG16HH);
+                translate([-DSG_LENGTH/2-150+BB_LENGTH/2, -layer_width/2, 0]) sbr_bearing_block(SBR16UU);
+                translate([-DSG_LENGTH/2-150+BB_LENGTH/2,  layer_width/2, 0]) sbr_bearing_block(SBR16UU);
+                translate([-DSG_LENGTH/2,                 -layer_width/2, 0]) sbr_bearing_block(SBR16UU);
+                translate([-DSG_LENGTH/2,                  layer_width/2, 0]) sbr_bearing_block(SBR16UU);
+                translate([-DSG_LENGTH/2+150-BB_LENGTH/2, -layer_width/2, 0]) sbr_bearing_block(SBR16UU);
+                translate([-DSG_LENGTH/2+150-BB_LENGTH/2,  layer_width/2, 0]) sbr_bearing_block(SBR16UU);
+            }
+
             translate([fixed_bearing_bk_offset-BK_DEPTH, -BK_WIDTH/2, -BF_Z_OFFSET]) rotate([90, 0, 90]) {
                 BKxx(BK_TYPE);
             }
@@ -177,7 +192,7 @@ color("LightBlue") layer_y_frame(LAYER_Y_DEPTH);
 
 translate([-30, Y_TO_X_PLATE_OFFSET, 45]) layer_y_to_x();
 
-translate([0, 0, 45+6]) layer_x_strong_guide();
+translate([0, 0, 45+6]) layer_x_strong_guide(X_POS);
 
 translate([-36, -30, 0]) rotate([0, 90, 0]) profile_connector_E30x120();
 translate([630, -30, 0]) rotate([0, 90, 0]) profile_connector_E30x120();
