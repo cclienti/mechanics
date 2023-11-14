@@ -17,6 +17,7 @@ include <../cnc/lib/sbr_bearing_blocks.scad>
 include <lib/layer_y_to_x.scad>
 include <lib/profile_connector.scad>
 include <lib/drill_press_plate.scad>
+include <lib/layer_x_connector.scad>
 
 
 LAYER_Y_DEPTH = 300;
@@ -191,8 +192,16 @@ translate([300, 0, 0]) layer_y_screw(LAYER_Y_DEPTH, Y_POS);
 color("LightBlue") layer_y_frame(LAYER_Y_DEPTH);
 
 translate([-30, Y_TO_X_PLATE_OFFSET, 45]) layer_y_to_x();
+translate([X_POS+2.5, Y_TO_X_PLATE_OFFSET-50/2, 45+6+45]) layer_x_connector();
+translate([X_POS+2.5, Y_TO_X_PLATE_OFFSET-50/2, 45+6+45+6+15]) {
+    translate([150, 30+25/2+30, 0]) rotate([0, 90, 0]) extrusion(E3060, 300, cornerHole = true);
+    translate([150, 30+60+25/2+30, 0]) rotate([0, 90, 0]) extrusion(E3060, 300, cornerHole = true);
+    translate([150, 15+25/2, 0]) rotate([0, 90, 0]) extrusion(E3030, 300, cornerHole = true);
+}
+
 
 translate([0, 0, 45+6]) layer_x_strong_guide(X_POS);
+
 
 translate([-36, -30, 0]) rotate([0, 90, 0]) profile_connector_E30x120();
 translate([630, -30, 0]) rotate([0, 90, 0]) profile_connector_E30x120();
