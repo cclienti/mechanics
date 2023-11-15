@@ -39,6 +39,10 @@ module profile_connector_E30x120() {
     profile_connector(profile_width=30, num_holes=4, hole_diam=6, thickness=6);
 }
 
+module profile_connector_E30x150() {
+    profile_connector(profile_width=30, num_holes=5, hole_diam=6, thickness=6);
+}
+
 module profile_connector_E60x120() {
     profile_connector_double(profile_width=30, num_holes=4, hole_diam=6, thickness=6);
 }

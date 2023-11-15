@@ -2,7 +2,7 @@ include <../../cnc/lib/fixed_bearings.scad>
 
 module layer_x_connector(thickness=6) {
     width = 175;
-    length = 300;
+    length = 350;
 
 	BK_HOLE_DIST = bk_hole_P(BK12);
 
