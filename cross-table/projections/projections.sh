@@ -11,6 +11,7 @@ function convert {
 
 convert layer_y_to_x
 convert profile_connector_E30x120
+convert profile_connector_E30x150
 convert profile_connector_E60x120
 convert drill_press_plate
 convert layer_x_connector
