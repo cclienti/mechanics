@@ -182,6 +182,16 @@ module layer_x_strong_guide(x_pos=150, max_space=300, x_offset=-5, bk_x_offset=2
     }
 }
 
+module top_support() {
+    length = 350;
+    translate([length/2, 105+25/2+30, 15]) rotate([90, 0, 90]) extrusion(E3060, length, cornerHole = true);
+    translate([length/2, 60+25/2+30, 0]) rotate([0, 90, 0]) extrusion(E3060, length, cornerHole = true);
+    translate([length/2, 25/2+30, 0]) rotate([0, 90, 0]) extrusion(E3060, length, cornerHole = true);
+    translate([-6, 25/2, 15]) rotate([0, 90, 0]) profile_connector_E30x150();
+    translate([length, 25/2, 15]) rotate([0, 90, 0]) profile_connector_E30x150();
+
+}
+
 translate([  0, 0, 0]) layer_y_strong_guide(LAYER_Y_DEPTH, Y_POS);
 translate([200, 0, 0]) layer_y_strong_guide(LAYER_Y_DEPTH, Y_POS);
 translate([400, 0, 0]) layer_y_strong_guide(LAYER_Y_DEPTH, Y_POS);
@@ -191,26 +201,24 @@ translate([300, 0, 0]) layer_y_screw(LAYER_Y_DEPTH, Y_POS);
 
 color("LightBlue") layer_y_frame(LAYER_Y_DEPTH);
 
-translate([-30, Y_TO_X_PLATE_OFFSET, 45]) layer_y_to_x();
-translate([X_POS+2.5, Y_TO_X_PLATE_OFFSET-50/2, 45+6+45]) layer_x_connector();
-translate([X_POS+2.5, Y_TO_X_PLATE_OFFSET-50/2, 45+6+45+6+15]) {
-    translate([150, 30+25/2+30, 0]) rotate([0, 90, 0]) extrusion(E3060, 300, cornerHole = true);
-    translate([150, 30+60+25/2+30, 0]) rotate([0, 90, 0]) extrusion(E3060, 300, cornerHole = true);
-    translate([150, 15+25/2, 0]) rotate([0, 90, 0]) extrusion(E3030, 300, cornerHole = true);
-}
-
 
 translate([0, 0, 45+6]) layer_x_strong_guide(X_POS);
 
+translate([-30, Y_TO_X_PLATE_OFFSET, 45]) layer_y_to_x();
+translate([X_POS+2.5-25, Y_TO_X_PLATE_OFFSET-50/2, 45+6+45]) layer_x_connector();
+translate([X_POS+2.5-25, Y_TO_X_PLATE_OFFSET-50/2, 45+6+45+6+15]) top_support();
 
-translate([-36, -30, 0]) rotate([0, 90, 0]) profile_connector_E30x120();
-translate([630, -30, 0]) rotate([0, 90, 0]) profile_connector_E30x120();
-translate([-36, LAYER_Y_DEPTH-120, 0]) rotate([0, 90, 0]) profile_connector_E30x120();
-translate([630, LAYER_Y_DEPTH-120, 0]) rotate([0, 90, 0]) profile_connector_E30x120();
+translate([-36, -30, 0]) rotate([0, 90, 0]) profile_connector_E30x150();
+translate([630, -30, 0]) rotate([0, 90, 0]) profile_connector_E30x150();
+translate([-36, LAYER_Y_DEPTH-150, 0]) rotate([0, 90, 0]) profile_connector_E30x150();
+translate([630, LAYER_Y_DEPTH-150, 0]) rotate([0, 90, 0]) profile_connector_E30x150();
 
 translate([-30, -30, -36]) rotate([0, 0, 0]) profile_connector_E60x120();
 translate([-30, LAYER_Y_DEPTH-120, -36]) rotate([0, 0, 0]) profile_connector_E60x120();
 translate([570, -30, -36]) rotate([0, 0, 0]) profile_connector_E60x120();
 translate([570, LAYER_Y_DEPTH-120, -36]) rotate([0, 0, 0]) profile_connector_E60x120();
 
-translate([170, -30, -36]) drill_press_plate();
+translate([170, -30, -36]) {
+    drill_press_plate();
+    translate([260/2, 330/2, 170]) cylinder(150, r=2.5);
+}
