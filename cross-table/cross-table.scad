@@ -23,7 +23,7 @@ include <lib/layer_x_connector.scad>
 LAYER_Y_DEPTH = 300;
 LAYER_Y_SCREW_OFFSET = 15-6;  //E3030/4 - 6mm (C2 in BK12 datasheet)
 Y_POS = 120;  // 0 to 129
-X_POS = 300;  // 0 to 300
+X_POS = -70;  // -70 to 320
 
 Y_TO_X_PLATE_OFFSET = (LAYER_Y_SCREW_OFFSET + bk_full_depth(BK12) -
                        sbr_bearing_block_length(SBR16UU)/3 + Y_POS);
@@ -164,15 +164,15 @@ module layer_x_strong_guide(x_pos=150, max_space=300, x_offset=-5, bk_x_offset=2
                     BFxx(BF_TYPE);
                 }
             }
-            translate([RAIL_LENGTH/2-150+x_pos, 0, 0]) {
+            translate([RAIL_LENGTH/2-125+x_pos, 0, 0]) {
                 rotate([0, 90, 0]) leadnut(SFU1610);
                 rotate([180, 180, 0]) ballscrew_mount(DSG16HH);
-                translate([-DSG_LENGTH/2-150+BB_LENGTH/2, -layer_width/2, 0]) sbr_bearing_block(SBR16UU);
-                translate([-DSG_LENGTH/2-150+BB_LENGTH/2,  layer_width/2, 0]) sbr_bearing_block(SBR16UU);
+                translate([-DSG_LENGTH/2-125+BB_LENGTH/2, -layer_width/2, 0]) sbr_bearing_block(SBR16UU);
+                translate([-DSG_LENGTH/2-125+BB_LENGTH/2,  layer_width/2, 0]) sbr_bearing_block(SBR16UU);
                 translate([-DSG_LENGTH/2,                 -layer_width/2, 0]) sbr_bearing_block(SBR16UU);
                 translate([-DSG_LENGTH/2,                  layer_width/2, 0]) sbr_bearing_block(SBR16UU);
-                translate([-DSG_LENGTH/2+150-BB_LENGTH/2, -layer_width/2, 0]) sbr_bearing_block(SBR16UU);
-                translate([-DSG_LENGTH/2+150-BB_LENGTH/2,  layer_width/2, 0]) sbr_bearing_block(SBR16UU);
+                translate([-DSG_LENGTH/2+125-BB_LENGTH/2, -layer_width/2, 0]) sbr_bearing_block(SBR16UU);
+                translate([-DSG_LENGTH/2+125-BB_LENGTH/2,  layer_width/2, 0]) sbr_bearing_block(SBR16UU);
             }
 
             translate([fixed_bearing_bk_offset-BK_DEPTH, -BK_WIDTH/2, -BF_Z_OFFSET]) rotate([90, 0, 90]) {
@@ -184,11 +184,11 @@ module layer_x_strong_guide(x_pos=150, max_space=300, x_offset=-5, bk_x_offset=2
 
 module top_support() {
     length = 350;
-    translate([length/2, 105+25/2+30, 15]) rotate([90, 0, 90]) extrusion(E3060, length, cornerHole = true);
-    translate([length/2, 60+25/2+30, 0]) rotate([0, 90, 0]) extrusion(E3060, length, cornerHole = true);
-    translate([length/2, 25/2+30, 0]) rotate([0, 90, 0]) extrusion(E3060, length, cornerHole = true);
-    translate([-6, 25/2, 15]) rotate([0, 90, 0]) profile_connector_E30x150();
-    translate([length, 25/2, 15]) rotate([0, 90, 0]) profile_connector_E30x150();
+    translate([length/2, 105+25+30, 15]) rotate([90, 0, 90]) extrusion(E3060, length, cornerHole = true);
+    translate([length/2, 60+25+30, 0]) rotate([0, 90, 0]) extrusion(E3060, length, cornerHole = true);
+    translate([length/2, 25+30, 0]) rotate([0, 90, 0]) extrusion(E3060, length, cornerHole = true);
+    translate([-6, 25, 15]) rotate([0, 90, 0]) profile_connector_E30x150();
+    translate([length, 25, 15]) rotate([0, 90, 0]) profile_connector_E30x150();
 
 }
 
@@ -205,8 +205,8 @@ color("LightBlue") layer_y_frame(LAYER_Y_DEPTH);
 translate([0, 0, 45+6]) layer_x_strong_guide(X_POS);
 
 translate([-30, Y_TO_X_PLATE_OFFSET, 45]) layer_y_to_x();
-translate([X_POS+2.5-25, Y_TO_X_PLATE_OFFSET-50/2, 45+6+45]) layer_x_connector();
-translate([X_POS+2.5-25, Y_TO_X_PLATE_OFFSET-50/2, 45+6+45+6+15]) top_support();
+translate([X_POS+2.5+25, Y_TO_X_PLATE_OFFSET-50/2, 45+6+45]) layer_x_connector();
+translate([X_POS+2.5+25, Y_TO_X_PLATE_OFFSET-50/2, 45+6+45+6+15]) top_support();
 
 translate([-36, -30, 0]) rotate([0, 90, 0]) profile_connector_E30x150();
 translate([630, -30, 0]) rotate([0, 90, 0]) profile_connector_E30x150();
@@ -220,5 +220,5 @@ translate([570, LAYER_Y_DEPTH-120, -36]) rotate([0, 0, 0]) profile_connector_E60
 
 translate([170, -30, -36]) {
     drill_press_plate();
-    translate([260/2, 330/2, 170]) cylinder(150, r=2.5);
+    translate([260/2, 330/2+15, -170]) cylinder(500, r=2.5);
 }
