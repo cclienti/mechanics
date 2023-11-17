@@ -124,13 +124,13 @@ module layer_y_to_x() {
                 layer_y_to_x_base(width, length);
             }
         }
-        translate([round_radius/2,        -extra_width/2+round_radius/2,      0])
-            rotate([0, 0, 180]) rounding_plate(round_radius, 20);
-        translate([length-round_radius/2, -extra_width/2+round_radius/2,      0])
-            rotate([0, 0, -90]) rounding_plate(round_radius, 20);
-        translate([round_radius/2,        width-extra_width/2-round_radius/2, 0])
-            rotate([0, 0,  90]) rounding_plate(round_radius, 20);
-        translate([length-round_radius/2, width-extra_width/2-round_radius/2, 0])
-            rotate([0, 0,   0]) rounding_plate(round_radius, 20);
+        // translate([round_radius/2,        -extra_width/2+round_radius/2,      0])
+        //     rotate([0, 0, 180]) rounding_plate(round_radius, 20);
+        // translate([length-round_radius/2, -extra_width/2+round_radius/2,      0])
+        //     rotate([0, 0, -90]) rounding_plate(round_radius, 20);
+        // translate([round_radius/2,        width-extra_width/2-round_radius/2, 0])
+        //     rotate([0, 0,  90]) rounding_plate(round_radius, 20);
+        // translate([length-round_radius/2, width-extra_width/2-round_radius/2, 0])
+        //     rotate([0, 0,   0]) rounding_plate(round_radius, 20);
     }
 }
