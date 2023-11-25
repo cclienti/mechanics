@@ -1,18 +1,18 @@
-include <../libraries/NopSCADlib/core.scad>
-include <../libraries/NopSCADlib/vitamins/stepper_motors.scad>
-include <../libraries/NopSCADlib/vitamins/rod.scad>
-include <../libraries/NopSCADlib/vitamins/leadnuts.scad>
-include <../libraries/NopSCADlib/vitamins/sk_brackets.scad>
-include <../libraries/NopSCADlib/vitamins/bearing_blocks.scad>
-include <../libraries/NopSCADlib/vitamins/extrusions.scad>
-include <../libraries/NopSCADlib/vitamins/stepper_motors.scad>
+include <../../libraries/NopSCADlib/core.scad>
+include <../../libraries/NopSCADlib/vitamins/stepper_motors.scad>
+include <../../libraries/NopSCADlib/vitamins/rod.scad>
+include <../../libraries/NopSCADlib/vitamins/leadnuts.scad>
+include <../../libraries/NopSCADlib/vitamins/sk_brackets.scad>
+include <../../libraries/NopSCADlib/vitamins/bearing_blocks.scad>
+include <../../libraries/NopSCADlib/vitamins/extrusions.scad>
+include <../../libraries/NopSCADlib/vitamins/stepper_motors.scad>
 
 
-include <../cnc/lib/fixed_bearings.scad>
-include <../cnc/lib/sfu1605.scad>
-include <../cnc/lib/ballscrew_mounts.scad>
-include <../cnc/lib/sbr_rails.scad>
-include <../cnc/lib/sbr_bearing_blocks.scad>
+include <../../cnc/lib/fixed_bearings.scad>
+include <../../cnc/lib/sfu1605.scad>
+include <../../cnc/lib/ballscrew_mounts.scad>
+include <../../cnc/lib/sbr_rails.scad>
+include <../../cnc/lib/sbr_bearing_blocks.scad>
 
 include <lib/layer_y_to_x.scad>
 include <lib/profile_connector.scad>
