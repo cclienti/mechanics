@@ -1,8 +1,8 @@
-include <../../cnc/lib/ballscrew_mounts.scad>
-include <../../cnc/lib/sbr_bearing_block.scad>
-include <../../cnc/lib/sbr_bearing_blocks.scad>
-include <../../cnc/lib/fixed_bearings.scad>
-include <../../cnc/lib/sfu1605.scad>
+include <../../../cnc/lib/ballscrew_mounts.scad>
+include <../../../cnc/lib/sbr_bearing_block.scad>
+include <../../../cnc/lib/sbr_bearing_blocks.scad>
+include <../../../cnc/lib/fixed_bearings.scad>
+include <../../../cnc/lib/sfu1605.scad>
 
 
 

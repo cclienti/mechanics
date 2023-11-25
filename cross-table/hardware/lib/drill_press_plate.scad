@@ -1,4 +1,4 @@
-include <../../cnc/lib/fixed_bearings.scad>
+include <../../../cnc/lib/fixed_bearings.scad>
 
 module drill_press_plate(hole_diam=6, thickness=6) {
     width = 260;
