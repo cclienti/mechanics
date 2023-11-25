@@ -1,3 +1,6 @@
 [submodule "libraries/NopSCADlib"]
 	path = libraries/NopSCADlib
 	url = https://github.com/nophead/NopSCADlib.git
+[submodule "cross-table/electronic/KiCad-RP-Pico"]
+	path = libraries/KiCad-RP-Pico
+	url = git@github.com:cclienti/KiCad-RP-Pico.git
