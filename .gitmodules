@@ -4,3 +4,6 @@
 [submodule "cross-table/electronic/KiCad-RP-Pico"]
 	path = libraries/KiCad-RP-Pico
 	url = git@github.com:cclienti/KiCad-RP-Pico.git
+[submodule "libraries/pico-sdk"]
+	path = libraries/pico-sdk
+	url = https://github.com/raspberrypi/pico-sdk.git
