@@ -1,0 +1,5 @@
+target extended-remote localhost:3333
+load
+monitor arm semihosting enable
+# monitor debug_level -2
+monitor reset init
