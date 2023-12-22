@@ -1,0 +1,5 @@
+CompileFlags:
+  Add:
+    - --sysroot=/usr/arm-none-eabi
+    - -stdlib=libstdc++
+    - -xc++
