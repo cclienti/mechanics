@@ -18,15 +18,21 @@
 #include "cross-table/lcd_menu.hpp"
 #include "cross-table/switch.hpp"
 #include "cross-table/position.hpp"
+#include "cross-table/stepper.hpp"
 
 #include "pico/stdlib.h"
+#include "pico/time.h"
+#include "hardware/gpio.h"
 #include "hardware/pwm.h"
 #include "hardware/clocks.h"
 #include "hardware/resets.h"
-#include "pico/time.h"
 
+#include <functional>
+#include <algorithm>
+#include <tuple>
 #include <memory>
 #include <cstdio>
+
 
 
 int main() {
@@ -45,7 +51,9 @@ int main() {
 
 	LCDMenu lcd_menu(std::move(lcd_display));
 
-    auto manual_menu_entry_cb = [&pos](char *buf) {pos.print(buf);};
+    auto manual_menu_entry_cb = [&pos](char *buf) {
+        pos.print(buf);
+    };
 
     auto auto_menu_entry_cb = [](char *buf) {
         std::sprintf(buf, "Reading sdcard");
@@ -54,6 +62,9 @@ int main() {
     lcd_menu.register_menu("<Manual>", manual_menu_entry_cb);
     lcd_menu.register_menu("<Auto>", auto_menu_entry_cb);
 
+
+    StepMotorDriver step1(20u, 21u, 22u);
+
     while(true) {
         lcd_menu.refresh();
         if (btn_menu->is_released()) {
@@ -61,9 +72,11 @@ int main() {
         }
         if (btn_x_minus->is_pressed()) {
             pos.x.incr(-1);
+            step1.rotate(1, 16000);
         }
         if (btn_x_plus->is_pressed()) {
             pos.x.incr(+1);
+            step1.rotate(0, 16000);
         }
     }
     return 0;
