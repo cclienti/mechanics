@@ -17,6 +17,7 @@
 #pragma once
 
 #include "hardware/gpio.h"
+#include "pico/time.h"
 #include <cstdint>
 
 
@@ -37,9 +38,21 @@ public:
         }
 	}
 
-	bool is_pressed(void) const
+	int is_pressed(void)
 	{
-		return (get() ^ m_inverted);
+        bool pressed = (get() ^ m_inverted);
+        if (pressed) {
+            auto delay = get_timestamp_ms() - m_last_pressed_time;
+            if (delay > 5000) {
+                return 100;
+            }
+            else if(delay > 1000) {
+                return 10;
+            }
+            return 1;
+        }
+        m_last_pressed_time = get_timestamp_ms();
+		return 0;
 	}
 
 	bool is_released(void)
@@ -50,6 +63,11 @@ public:
 	}
 
 private:
+    static inline std::uint32_t get_timestamp_ms()
+    {
+        return to_ms_since_boot(get_absolute_time());
+    }
+
 	inline std::uint32_t get(void) const
 	{
 		return gpio_get(m_gpio);
@@ -58,5 +76,6 @@ private:
 	const std::uint32_t m_gpio;
 	const std::uint32_t m_inverted;
 
+    std::uint32_t m_last_pressed_time{0};
 	bool m_pressed{false};
 };
