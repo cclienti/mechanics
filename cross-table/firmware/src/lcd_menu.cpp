@@ -43,12 +43,11 @@ std::string format_info(const std::string &info, std::uint8_t width, char pad)
 }
 
 
-LCDMenu::LCDMenu(LCDDisplayPtr lcd_display):
-	m_lcd_display      (std::move(lcd_display)),
+LCDMenu::LCDMenu():
 	m_current_entry_id (0)
 {
-	m_lcd_display->clear();
-	m_lcd_display->home();
+	m_lcd_display.clear();
+	m_lcd_display.home();
 
 	// Write custom chars for splash
 	std::uint8_t char_1[8] = {0x07, 0x04, 0x04, 0x1C, 0x1C, 0x04, 0x04, 0x07}; // splash -[
@@ -57,12 +56,12 @@ LCDMenu::LCDMenu(LCDDisplayPtr lcd_display):
 	std::uint8_t char_4[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x1F, 0x1F, 0x00}; // Thick underscore
 	std::uint8_t char_5[8] = {0x03, 0x06, 0x0C, 0x18, 0x18, 0x0C, 0x06, 0x03}; // Title <
 	std::uint8_t char_6[8] = {0x18, 0x0C, 0x06, 0x03, 0x03, 0x06, 0x0C, 0x18}; // Title >
-	m_lcd_display->set_char(1, char_1);
-	m_lcd_display->set_char(2, char_2);
-	m_lcd_display->set_char(3, char_3);
-	m_lcd_display->set_char(4, char_4);
-	m_lcd_display->set_char(5, char_5);
-	m_lcd_display->set_char(6, char_6);
+	m_lcd_display.set_char(1, char_1);
+	m_lcd_display.set_char(2, char_2);
+	m_lcd_display.set_char(3, char_3);
+	m_lcd_display.set_char(4, char_4);
+	m_lcd_display.set_char(5, char_5);
+	m_lcd_display.set_char(6, char_6);
 }
 
 
@@ -73,8 +72,8 @@ void LCDMenu::register_menu(const std::string &title, EntryDisplayCallback cb)
 
 
 std::size_t LCDMenu::switch_entry(void) {
-    m_lcd_display->clear();
-    m_lcd_display->home();
+    m_lcd_display.clear();
+    m_lcd_display.home();
     m_current_entry_id += 1;
     m_current_entry_id %= m_menu_entries.size();
     return m_current_entry_id;
@@ -84,7 +83,7 @@ std::size_t LCDMenu::switch_entry(void) {
 void LCDMenu::refresh()
 {
 	if (m_is_splashed) {
-		m_lcd_display->clear();
+		m_lcd_display.clear();
 		m_is_splashed = false;
 	}
 
@@ -97,13 +96,13 @@ void LCDMenu::refresh()
 void LCDMenu::splash(const std::string &/*text*/)
 {
 	if (m_is_refreshed) {
-		m_lcd_display->clear();
+		m_lcd_display.clear();
 		m_is_refreshed = false;
 	}
 
 	m_is_splashed = true;
 
-	m_lcd_display->set_pos(0, 0);
+	m_lcd_display.set_pos(0, 0);
 }
 
 
@@ -117,10 +116,10 @@ void LCDMenu::refresh_menu()
 
 	const auto &entry = m_menu_entries[m_current_entry_id];
 
-	m_lcd_display->set_pos(0, 0);
-	m_lcd_display->print(format_info(entry.first, m_lcd_display->get_num_cols(), '-'));
+	m_lcd_display.set_pos(0, 0);
+	m_lcd_display.print(format_info(entry.first, m_lcd_display.get_num_cols(), '-'));
 
-	m_lcd_display->set_pos(1, 0);
+	m_lcd_display.set_pos(1, 0);
     entry.second(buf);
-	m_lcd_display->print(buf);
+	m_lcd_display.print(buf);
 }

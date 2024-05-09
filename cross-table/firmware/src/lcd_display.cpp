@@ -15,10 +15,10 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 #include "cross-table/lcd_display.hpp"
+
 #include "hardware/gpio.h"
 #include "hardware/i2c.h"
 #include "pico/time.h"
-
 
 #include <algorithm>
 #include <iomanip>

@@ -20,10 +20,12 @@
 class StepMotorDriver
 {
 public:
-    StepMotorDriver(std::uint32_t pulse_pin, std::uint32_t dir_pin, std::uint32_t ena_pin) :
+    StepMotorDriver(std::uint32_t pulse_pin, std::uint32_t dir_pin,
+                    std::uint32_t ena_pin, std::uint32_t limit_pin) :
         m_pulse_pin (pulse_pin),
         m_dir_pin (dir_pin),
-        m_ena_pin (ena_pin)
+        m_ena_pin (ena_pin),
+        m_limit_pin (limit_pin)
     {
         gpio_init(m_pulse_pin);
         gpio_set_dir(m_pulse_pin, GPIO_OUT);
@@ -35,7 +37,10 @@ public:
 
         gpio_init(m_ena_pin);
         gpio_set_dir(m_ena_pin, GPIO_OUT);
-        gpio_put(m_ena_pin, 1);
+        gpio_put(m_ena_pin, 0);
+
+        gpio_init(m_limit_pin);
+        gpio_set_dir(m_limit_pin, GPIO_IN);
     }
 
     void rotate(std::uint32_t direction, std::uint32_t pulses)
@@ -63,7 +68,7 @@ public:
     {
         sleep_us(50);
         gpio_put(m_ena_pin, 0);
-    }
+   }
 
     void release()
     {
@@ -89,6 +94,7 @@ private:
     const std::uint32_t m_pulse_pin;
     const std::uint32_t m_dir_pin;
     const std::uint32_t m_ena_pin;
+    const std::uint32_t m_limit_pin;
 
     static constexpr std::int32_t m_slow_period {2000};
     static constexpr std::int32_t m_fast_period {100};
