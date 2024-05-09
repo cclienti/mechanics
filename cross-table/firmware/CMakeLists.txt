@@ -51,4 +51,4 @@ pico_add_extra_outputs(cross-table)
 
 # add uart
 pico_enable_stdio_usb(cross-table 0)
-pico_enable_stdio_uart(cross-table 1)
+pico_enable_stdio_uart(cross-table 0)

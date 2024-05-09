@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cross-table/config.hpp>
+
 #include <cstdlib>
 #include <cstdio>
 
@@ -17,7 +19,7 @@ struct Axis
 
     void incr(int val)
     {
-        abs_pos += val;
+        abs_pos += val * TableConfig::pulse_per_tenth;
     }
 
     void reset(void) {
@@ -42,11 +44,11 @@ struct Axis
         char rel_sign = rel < 0 ? '-' : ' ';
         int abs_integer, abs_frac;
         int rel_integer, rel_frac;
-        decimal(abs_pos, abs_integer, abs_frac);
-        decimal(rel, rel_integer, rel_frac);
+        decimal(std::abs(abs_pos)/TableConfig::pulse_per_tenth, abs_integer, abs_frac);
+        decimal(std::abs(rel)/TableConfig::pulse_per_tenth, rel_integer, rel_frac);
         return sprintf(buffer, "%c%03d.%1d     %c%03d.%1d",
-                       abs_sign, std::abs(abs_integer), std::abs(abs_frac),
-                       rel_sign, std::abs(rel_integer), std::abs(rel_frac));
+                       abs_sign, abs_integer, abs_frac,
+                       rel_sign, rel_integer, rel_frac);
     }
 };
 
@@ -68,6 +70,7 @@ struct Position
     }
 
     void print(char *buffer) {
+        buffer += sprintf(buffer, "    -Abs-      -Rel-\n");
         buffer += sprintf(buffer, "X: ");
         buffer += x.print(buffer);
         buffer += sprintf(buffer, "\nY: ");

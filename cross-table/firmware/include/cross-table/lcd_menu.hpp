@@ -27,10 +27,9 @@
 #include <cstddef>
 
 
-class LCDMenu final
+class LCDMenu
 {
 public:
-	using LCDDisplayPtr = std::unique_ptr<LCDDisplay>;
     using EntryDisplayCallback = std::function<void(char *)>;
     using MenuEntry = std::pair<std::string, EntryDisplayCallback>;
 
@@ -46,7 +45,7 @@ public:
 	 * @param button, Unique pointer to Switch instance
 	 * @param buzzer, Shared pointer to Buzzer instance
 	 */
-	LCDMenu(LCDDisplayPtr lcd_display);
+	LCDMenu();
 
 	/**
 	 * Add an entry in the menu to display/update a boolean variable.
@@ -98,7 +97,7 @@ private:
 	void refresh_footer();
 
 private:
-	LCDDisplayPtr m_lcd_display;
+	LCDDisplay m_lcd_display;
 	std::vector<MenuEntry> m_menu_entries;
 	std::size_t m_current_entry_id;
 	bool m_is_refreshed{false};

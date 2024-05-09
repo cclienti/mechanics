@@ -19,37 +19,53 @@
 #include "cross-table/switch.hpp"
 #include "cross-table/position.hpp"
 #include "cross-table/stepper.hpp"
+#include "cross-table/config.hpp"
 
+/*
 #include "pico/stdlib.h"
 #include "pico/time.h"
 #include "hardware/gpio.h"
 #include "hardware/pwm.h"
 #include "hardware/clocks.h"
 #include "hardware/resets.h"
-
+*/
 #include <functional>
 #include <algorithm>
 #include <tuple>
-#include <memory>
 #include <cstdio>
 
 
+struct Buttons
+{
+    Buttons() :
+        x_minus(TableConfig::pin_btn_x_minus, true),
+        x_plus(TableConfig::pin_btn_x_plus, true),
+        y_minus(TableConfig::pin_btn_y_minus, true),
+        y_plus(TableConfig::pin_btn_y_plus, true),
+        reset(TableConfig::pin_btn_reset, true),
+        ok(TableConfig::pin_btn_ok, true),
+        menu(TableConfig::pin_btn_menu, true)
+    {}
+
+	Switch x_minus;
+	Switch x_plus;
+	Switch y_minus;
+	Switch y_plus;
+	Switch reset;
+	Switch ok;
+    Switch menu;
+};
+
 
 int main() {
-    stdio_init_all();
-
+    Buttons buttons;
+	LCDMenu lcd_menu;
     Position pos;
 
- 	auto lcd_display = std::make_unique<LCDDisplay>();
-	auto btn_x_minus = std::make_unique<Switch>(6, true);
-	auto btn_x_plus = std::make_unique<Switch>(7, true);
-	auto btn_y_minus = std::make_unique<Switch>(8, true);
-	auto btn_y_plus = std::make_unique<Switch>(9, true);
-	auto btn_reset = std::make_unique<Switch>(10, true);
-	auto btn_ok = std::make_unique<Switch>(11, true);
-    auto btn_menu = std::make_unique<Switch>(12, true);
-
-	LCDMenu lcd_menu(std::move(lcd_display));
+    StepMotorDriver step_x(16u, 17u, 18u, 14u);
+    StepMotorDriver step_y(20u, 21u, 22u, 15u);
+    step_x.release();
+    step_y.release();
 
     auto manual_menu_entry_cb = [&pos](char *buf) {
         pos.print(buf);
@@ -63,20 +79,36 @@ int main() {
     lcd_menu.register_menu("<Auto>", auto_menu_entry_cb);
 
 
-    StepMotorDriver step1(20u, 21u, 22u);
-
     while(true) {
         lcd_menu.refresh();
-        if (btn_menu->is_released()) {
+        if (buttons.menu.is_released()) {
             lcd_menu.switch_entry();
         }
-        if (btn_x_minus->is_pressed()) {
+        if (buttons.x_minus.is_pressed()) {
             pos.x.incr(-1);
-            step1.rotate(1, 16000);
+            //step1.rotate(1, 16000);
         }
-        if (btn_x_plus->is_pressed()) {
+        if (buttons.x_plus.is_pressed()) {
             pos.x.incr(+1);
-            step1.rotate(0, 16000);
+            //step1.rotate(0, 16000);
+        }
+        if (buttons.y_minus.is_pressed()) {
+            pos.y.incr(-1);
+            //step1.rotate(1, 16000);
+        }
+        if (buttons.y_plus.is_pressed()) {
+            pos.y.incr(+1);
+            //step1.rotate(0, 16000);
+        }
+        if (buttons.ok.is_released()) {
+            pos.y.incr(+1);
+            step_x.hold();
+            step_y.hold();
+        }
+        if (buttons.reset.is_released()) {
+            pos.y.incr(-1);
+            step_x.release();
+            step_y.release();
         }
     }
     return 0;
