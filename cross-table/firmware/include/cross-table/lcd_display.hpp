@@ -16,13 +16,15 @@
 
 #pragma once
 
+#include <cross-table/config.hpp>
+
 #include <hardware/i2c.h>
-#include <iostream>
 #include <string>
 #include <cstdint>
 
 
-class LCDDisplay final
+
+class LCDDisplay
 {
 public:
 	/**
@@ -39,11 +41,10 @@ public:
 	 * @param backlight, enable the backlight
 	 */
 	LCDDisplay(std::uint8_t i2c_inst_num = 0u, std::uint32_t i2c_speed = 100 * 1000u,
-	           std::uint8_t i2c_addr = 0x27, std::uint8_t sda_pin = 0u,
-	           std::uint8_t scl_pin = 1u, bool pullup = false,
+	           std::uint8_t i2c_addr = 0x27, std::uint8_t sda_pin = TableConfig::pin_i2c_sda,
+	           std::uint8_t scl_pin = TableConfig::pin_i2c_scl, bool pullup = false,
 	           std::uint8_t num_lines = 4, std::uint8_t num_cols = 20,
 	           bool backlight = true);
-
 
 	/**
 	 * Get number of lines
