@@ -80,31 +80,39 @@ int main() {
 
 
     while(true) {
+        int pressed;
+
         lcd_menu.refresh();
         if (buttons.menu.is_released()) {
             lcd_menu.switch_entry();
         }
-        if (buttons.x_minus.is_pressed()) {
-            pos.x.incr(-1);
-            //step1.rotate(1, 16000);
+
+        pressed = buttons.x_minus.is_pressed();
+        if (pressed) {
+            pos.x.incr(-1*pressed);
         }
-        if (buttons.x_plus.is_pressed()) {
-            pos.x.incr(+1);
-            //step1.rotate(0, 16000);
+
+        pressed = buttons.x_plus.is_pressed();
+        if (pressed) {
+            pos.x.incr(pressed);
         }
-        if (buttons.y_minus.is_pressed()) {
-            pos.y.incr(-1);
-            //step1.rotate(1, 16000);
+
+        pressed = buttons.y_minus.is_pressed();
+        if (pressed) {
+            pos.y.incr(-1*pressed);
         }
-        if (buttons.y_plus.is_pressed()) {
-            pos.y.incr(+1);
-            //step1.rotate(0, 16000);
+
+        pressed = buttons.y_plus.is_pressed();
+        if (pressed) {
+            pos.y.incr(pressed);
         }
+
         if (buttons.ok.is_released()) {
             pos.y.incr(+1);
             step_x.hold();
             step_y.hold();
         }
+
         if (buttons.reset.is_released()) {
             pos.y.incr(-1);
             step_x.release();
