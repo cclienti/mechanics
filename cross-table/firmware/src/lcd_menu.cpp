@@ -93,7 +93,7 @@ void LCDMenu::refresh()
 }
 
 
-void LCDMenu::splash(const std::string &/*text*/)
+void LCDMenu::splash(const std::string &text)
 {
 	if (m_is_refreshed) {
 		m_lcd_display.clear();
@@ -102,7 +102,10 @@ void LCDMenu::splash(const std::string &/*text*/)
 
 	m_is_splashed = true;
 
-	m_lcd_display.set_pos(0, 0);
+	m_lcd_display.set_pos(1, 0);
+
+    std::string splash = "[" + text + "]";
+	m_lcd_display.print(format_info(splash, m_lcd_display.get_num_cols(), '-'));
 }
 
 
