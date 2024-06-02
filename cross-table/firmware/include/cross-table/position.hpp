@@ -44,8 +44,10 @@ struct Axis
         char rel_sign = rel < 0 ? '-' : ' ';
         int abs_integer, abs_frac;
         int rel_integer, rel_frac;
-        decimal(std::abs(abs_pos)/TableConfig::pulse_per_tenth, abs_integer, abs_frac);
-        decimal(std::abs(rel)/TableConfig::pulse_per_tenth, rel_integer, rel_frac);
+        decimal(std::abs(abs_pos)/TableConfig::pulse_per_tenth,
+                abs_integer, abs_frac);
+        decimal(std::abs(rel)/TableConfig::pulse_per_tenth,
+                rel_integer, rel_frac);
         return sprintf(buffer, "%c%03d.%1d     %c%03d.%1d",
                        abs_sign, abs_integer, abs_frac,
                        rel_sign, rel_integer, rel_frac);
