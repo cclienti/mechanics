@@ -62,9 +62,16 @@ int main() {
 	LCDMenu lcd_menu;
     Position pos;
 
-    StepMotorDriver step_x(16u, 17u, 18u, 14u);
-    StepMotorDriver step_y(20u, 21u, 22u, 15u);
+    StepMotorDriver step_x(TableConfig::pin_step_x_pulse,
+                           TableConfig::pin_step_x_dir,
+                           TableConfig::pin_step_x_ena,
+                           TableConfig::pin_step_limit_0);
     step_x.release();
+
+    StepMotorDriver step_y(TableConfig::pin_step_y_pulse,
+                           TableConfig::pin_step_y_dir,
+                           TableConfig::pin_step_y_ena,
+                           TableConfig::pin_step_limit_1);
     step_y.release();
 
     auto manual_menu_entry_cb = [&pos](char *buf) {
@@ -77,7 +84,6 @@ int main() {
 
     lcd_menu.register_menu("<Manual>", manual_menu_entry_cb);
     lcd_menu.register_menu("<Auto>", auto_menu_entry_cb);
-
 
     while(true) {
         int pressed;
@@ -108,15 +114,24 @@ int main() {
         }
 
         if (buttons.ok.is_released()) {
-            pos.y.incr(+1);
-            step_x.hold();
-            step_y.hold();
+            pos.set_ref();
+            //step_x.hold();
+            //step_y.hold();
         }
 
         if (buttons.reset.is_released()) {
-            pos.y.incr(-1);
-            step_x.release();
-            step_y.release();
+            lcd_menu.splash("Ok for Reset");
+            while (true) {
+                if (buttons.ok.is_released()) {
+                    pos.reset();
+                    step_x.release();
+                    step_y.release();
+                    break;
+                }
+                if (buttons.reset.is_released()) {
+                    break;
+                }
+            }
         }
     }
     return 0;
