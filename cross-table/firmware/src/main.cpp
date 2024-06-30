@@ -29,9 +29,7 @@
 #include "hardware/clocks.h"
 #include "hardware/resets.h"
 */
-#include <functional>
-#include <algorithm>
-#include <tuple>
+#include <cstdint>
 #include <cstdio>
 
 
@@ -57,6 +55,28 @@ struct Buttons
 };
 
 
+void move_motor(StepMotorDriver &step, Axis &axis)
+{
+    std::uint32_t remaining {0};
+    std::int32_t direction {0};
+
+    auto pos = axis.rel_pulse_pos();
+
+    if (pos > 0) {
+        direction = 1;
+    }
+    else if (pos < 0) {
+        direction = -1;
+    }
+    else {
+        return;
+    }
+
+    remaining = step.rotate(direction, std::abs(pos));
+    axis.incr_pulse(remaining * direction * -1);
+}
+
+
 int main() {
     Buttons buttons;
 	LCDMenu lcd_menu;
@@ -65,13 +85,13 @@ int main() {
     StepMotorDriver step_x(TableConfig::pin_step_x_pulse,
                            TableConfig::pin_step_x_dir,
                            TableConfig::pin_step_x_ena,
-                           TableConfig::pin_step_limit_0);
+                           TableConfig::pin_step_limit_1);
     step_x.release();
 
     StepMotorDriver step_y(TableConfig::pin_step_y_pulse,
                            TableConfig::pin_step_y_dir,
                            TableConfig::pin_step_y_ena,
-                           TableConfig::pin_step_limit_1);
+                           TableConfig::pin_step_limit_0);
     step_y.release();
 
     auto manual_menu_entry_cb = [&pos](char *buf) {
@@ -95,28 +115,28 @@ int main() {
 
         pressed = buttons.x_minus.is_pressed();
         if (pressed) {
-            pos.x.incr(-1*pressed);
+            pos.x.incr_tenth(-1*pressed);
         }
 
         pressed = buttons.x_plus.is_pressed();
         if (pressed) {
-            pos.x.incr(pressed);
+            pos.x.incr_tenth(pressed);
         }
 
         pressed = buttons.y_minus.is_pressed();
         if (pressed) {
-            pos.y.incr(-1*pressed);
+            pos.y.incr_tenth(-1*pressed);
         }
 
         pressed = buttons.y_plus.is_pressed();
         if (pressed) {
-            pos.y.incr(pressed);
+            pos.y.incr_tenth(pressed);
         }
 
         if (buttons.ok.is_released()) {
+            move_motor(step_x, pos.x);
+            move_motor(step_y, pos.y);
             pos.set_ref();
-            //step_x.hold();
-            //step_y.hold();
         }
 
         if (buttons.reset.is_released()) {
