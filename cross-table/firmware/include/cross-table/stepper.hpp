@@ -17,6 +17,14 @@
 #pragma once
 
 
+#include <pico/time.h>
+#include <hardware/gpio.h>
+
+#include <atomic>
+#include <algorithm>
+#include <cstdint>
+
+
 class StepMotorDriver
 {
 public:
@@ -43,14 +51,26 @@ public:
         gpio_set_dir(m_limit_pin, GPIO_IN);
     }
 
-    void rotate(std::uint32_t direction, std::uint32_t pulses)
+    /**
+     * Rotate the step motor
+     *
+     * If the input pin where the limit switch is plugged is zero, the
+     * rotation is stopped and the number of pulses remaining is returned.
+     *
+     * @param direction, rotation direction (-1 or 1)
+     * @param pulses, number of pulses to apply
+     * @return the number of pulses remaining is returned.
+     */
+    std::uint32_t rotate(std::int32_t direction, std::uint32_t pulses)
     {
         hold();
-        gpio_put(m_dir_pin, direction == 0 ? 0 : 1);
-        sleep_us(50);
+        gpio_put(m_dir_pin, direction >= 0 ? 0 : 1);
+        wait_us(50);
 
         std::int32_t period = m_slow_period;
-        for(auto [i, j] = std::tuple{0u, pulses-1}; i<pulses; i++, j--) {
+        std::uint32_t count {0};
+        std::uint32_t count_rev{pulses-1};
+        for(; count < pulses && gpio_get(m_limit_pin); count++, count_rev--) {
             auto period_clip = std::max(period, m_fast_period);
 
             gpio_put(m_pulse_pin, 0);
@@ -59,9 +79,10 @@ public:
             gpio_put(m_pulse_pin, 1);
             wait_us(period_clip);
 
-            period = i<j ? period - m_period_incr : period + m_period_incr;
+            period = count < count_rev ? period - m_period_incr : period + m_period_incr;
         }
         release();
+        return pulses-count;
     }
 
     void hold()
@@ -77,16 +98,26 @@ public:
     }
 
 private:
+    void wait_async_us(std::int32_t us)
+    {
+        m_event.store(false);
+        add_alarm_in_us(us, StepMotorDriver::alarm_callback, this, false);
+    }
+
+    void wait_event()
+    {
+        while(m_event.load() == false);
+    }
+
     void wait_us(std::int32_t us)
     {
-        m_event = false;
-        add_alarm_in_us(us, StepMotorDriver::alarm_callback, this, false);
-        while(m_event == false);
+        wait_async_us(us);
+        wait_event();
     }
 
     static std::int64_t alarm_callback(alarm_id_t /*id*/, void *user_data)
     {
-        reinterpret_cast<StepMotorDriver*>(user_data)->m_event = true;
+        reinterpret_cast<StepMotorDriver*>(user_data)->m_event.store(true);
         return 0;
     }
 
@@ -100,5 +131,5 @@ private:
     static constexpr std::int32_t m_fast_period {100};
     static constexpr std::int32_t m_period_incr {1};
 
-    volatile bool m_event {false};
+    std::atomic<bool> m_event {false};
 };
