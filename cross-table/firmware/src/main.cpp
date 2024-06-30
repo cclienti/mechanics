@@ -14,21 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-#include "cross-table/lcd_display.hpp"
 #include "cross-table/lcd_menu.hpp"
 #include "cross-table/switch.hpp"
 #include "cross-table/position.hpp"
 #include "cross-table/stepper.hpp"
 #include "cross-table/config.hpp"
+#include "cross-table/sdcard.hpp"
 
-/*
-#include "pico/stdlib.h"
-#include "pico/time.h"
-#include "hardware/gpio.h"
-#include "hardware/pwm.h"
-#include "hardware/clocks.h"
-#include "hardware/resets.h"
-*/
+#include "pico/stdio.h"
+
 #include <cstdint>
 #include <cstdio>
 
@@ -86,12 +80,15 @@ int main() {
                            TableConfig::pin_step_x_dir,
                            TableConfig::pin_step_x_ena,
                            TableConfig::pin_step_limit_1);
-    step_x.release();
 
     StepMotorDriver step_y(TableConfig::pin_step_y_pulse,
                            TableConfig::pin_step_y_dir,
                            TableConfig::pin_step_y_ena,
                            TableConfig::pin_step_limit_0);
+
+    stdio_init_all();
+
+    step_x.release();
     step_y.release();
 
     auto manual_menu_entry_cb = [&pos](char *buf) {
