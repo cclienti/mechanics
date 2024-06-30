@@ -27,7 +27,7 @@ add_compile_options(-Wall -Wextra -Werror)
 
 pico_sdk_init()
 
-add_subdirectory(FatFs_SPI/FatFs_SPI)
+add_subdirectory(no-OS-FatFS-SD-SDIO-SPI-RPi-Pico/src)
 
 add_compile_options(
   -Wall
@@ -35,6 +35,7 @@ add_compile_options(
   -Wno-unused-function # we have some for the docs that aren't called
   -Wno-maybe-uninitialized
   -Wno-missing-field-initializers
+  -Wno-unused-parameter
 )
 
 add_executable(cross-table
@@ -49,7 +50,11 @@ add_executable(cross-table
 # pico_generate_pio_header(cross-table ${CMAKE_CURRENT_LIST_DIR}/pio/rotary_encoder.pio)
 
 target_include_directories(cross-table PUBLIC include)
-target_link_libraries(cross-table PRIVATE pico_stdlib hardware_pwm hardware_i2c hardware_spi hardware_pio FatFs_SPI)
+target_link_libraries(
+  cross-table PRIVATE
+  pico_stdlib hardware_pwm hardware_i2c hardware_spi hardware_pio
+  no-OS-FatFS-SD-SDIO-SPI-RPi-Pico
+)
 
 # create map/bin/hex/uf2 file in addition to ELF.
 pico_add_extra_outputs(cross-table)
