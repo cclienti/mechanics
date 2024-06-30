@@ -17,7 +17,12 @@ struct Axis
         frac = value % 10;
     }
 
-    void incr(int val)
+    void incr_pulse(int val)
+    {
+        abs_pos += val;
+    }
+
+    void incr_tenth(int val)
     {
         abs_pos += val * TableConfig::pulse_per_tenth;
     }
@@ -32,14 +37,14 @@ struct Axis
         abs_ref = abs_pos;
     }
 
-    int rel_pos() const
+    int rel_pulse_pos() const
     {
         return abs_pos - abs_ref;
     }
 
     int print(char *buffer)
     {
-        auto rel = rel_pos();
+        auto rel = rel_pulse_pos();
         char abs_sign = abs_pos < 0 ? '-' : ' ';
         char rel_sign = rel < 0 ? '-' : ' ';
         int abs_integer, abs_frac;
