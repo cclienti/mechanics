@@ -15,7 +15,7 @@
 // along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 #include "cross-table/lcd_menu.hpp"
-#include "cross-table/switch.hpp"
+#include "cross-table/buttons.hpp"
 #include "cross-table/position.hpp"
 #include "cross-table/stepper.hpp"
 #include "cross-table/config.hpp"
@@ -26,27 +26,6 @@
 #include <cstdint>
 #include <cstdio>
 
-
-struct Buttons
-{
-    Buttons() :
-        x_minus(TableConfig::pin_btn_x_minus, true),
-        x_plus(TableConfig::pin_btn_x_plus, true),
-        y_minus(TableConfig::pin_btn_y_minus, true),
-        y_plus(TableConfig::pin_btn_y_plus, true),
-        reset(TableConfig::pin_btn_reset, true),
-        ok(TableConfig::pin_btn_ok, true),
-        menu(TableConfig::pin_btn_menu, true)
-    {}
-
-	Switch x_minus;
-	Switch x_plus;
-	Switch y_minus;
-	Switch y_plus;
-	Switch reset;
-	Switch ok;
-    Switch menu;
-};
 
 
 void move_motor(StepMotorDriver &step, Axis &axis)
