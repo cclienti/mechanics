@@ -27,28 +27,33 @@ add_compile_options(-Wall -Wextra -Werror)
 
 pico_sdk_init()
 
+add_subdirectory(FatFs_SPI/FatFs_SPI)
+
 add_compile_options(
   -Wall
   -Wno-format          # int != int32_t as far as the compiler is concerned because gcc has int32_t as long int
   -Wno-unused-function # we have some for the docs that aren't called
   -Wno-maybe-uninitialized
+  -Wno-missing-field-initializers
 )
 
 add_executable(cross-table
   src/lcd_display.cpp
   src/lcd_menu.cpp
   src/main.cpp
+  src/sdcard_config.cpp
+  src/sdcard.cpp
 )
 
 # Generates header for pio
 # pico_generate_pio_header(cross-table ${CMAKE_CURRENT_LIST_DIR}/pio/rotary_encoder.pio)
 
 target_include_directories(cross-table PUBLIC include)
-target_link_libraries(cross-table pico_stdlib hardware_pwm hardware_i2c hardware_spi hardware_pio)
+target_link_libraries(cross-table PRIVATE pico_stdlib hardware_pwm hardware_i2c hardware_spi hardware_pio FatFs_SPI)
 
 # create map/bin/hex/uf2 file in addition to ELF.
 pico_add_extra_outputs(cross-table)
 
 # add uart
-pico_enable_stdio_usb(cross-table 0)
+pico_enable_stdio_usb(cross-table 1)
 pico_enable_stdio_uart(cross-table 0)
