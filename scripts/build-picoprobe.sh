@@ -22,10 +22,10 @@ popd
 #############################################
 git clone https://github.com/raspberrypi/openocd.git rpi-openocd
 pushd rpi-openocd
-git checkout rp2040
+git checkout rp2040-v0.12.0
 git submodule update --init --recursive
 ./bootstrap
-./configure --prefix=${HOME}/rpi-openocd
+CXXFLAGS="-Wno-error" CFLAGS="-Wno-error" ./configure --prefix=${OPENODCD_INSTALL_DIR} --enable-cmsis-dap
 make -j${CPU_COUNT}
 make install
 popd
