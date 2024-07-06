@@ -13,3 +13,5 @@ convert leg
 convert plate
 convert z_axis_mounting_plate
 convert torche_adapter
+convert lifting_plate
+convert lifting_plate_connector
