@@ -70,8 +70,8 @@ struct Axis
         decimal(std::abs(rel)/TableConfig::pulse_per_tenth,
                 rel_integer, rel_frac);
         return sprintf(buffer, "%c%03d.%1d     %c%03d.%1d",
-                       abs_sign, abs_integer, abs_frac,
-                       rel_sign, rel_integer, rel_frac);
+                       rel_sign, rel_integer, rel_frac,
+                       abs_sign, abs_integer, abs_frac);
     }
 };
 
@@ -93,7 +93,7 @@ struct Position
     }
 
     void print(char *buffer) {
-        buffer += sprintf(buffer, "    -Abs-      -Rel-\n");
+        buffer += sprintf(buffer, "    -Rel-      -Abs-\n");
         buffer += sprintf(buffer, "X: ");
         buffer += x.print(buffer);
         buffer += sprintf(buffer, "\nY: ");
