@@ -1,5 +1,16 @@
 CompileFlags:
-  Add:
-    - --sysroot=/usr/arm-none-eabi
-    - -stdlib=libstdc++
-    - -xc++
+  Add: [-xc++, -Wall, -std=c++20, --sysroot=/usr/arm-none-eabi, --stdlib=libstdc++, -ferror-limit=0]
+  Remove: -W*
+  Compiler: /usr/bin/arm-none-eabi-gcc
+
+Index:
+  StandardLibrary: Yes
+
+Diagnostics:
+  ClangTidy:
+    Add: [performance*, modernize*, readability*]
+    Remove: [modernize-use-trailing-return-type]
+
+# For emacs, consider adding "/usr/arm-none-eabi" in lsp-clients-clangd-library-directories
+# (custom-set-variables
+# '(lsp-clients-clangd-library-directories '("/usr" "/usr/arm-none-eabi")))
