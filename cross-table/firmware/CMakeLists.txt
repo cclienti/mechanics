@@ -21,9 +21,7 @@ include(pico_sdk_import.cmake)
 
 project(cross-table LANGUAGES C CXX)
 
-set(CMAKE_CXX_STANDARD 17)
-
-add_compile_options(-Wall -Wextra -Werror)
+set(CMAKE_CXX_STANDARD 20)
 
 pico_sdk_init()
 
@@ -31,10 +29,8 @@ add_subdirectory(no-OS-FatFS-SD-SDIO-SPI-RPi-Pico/src)
 
 add_compile_options(
   -Wall
-  -Wno-format          # int != int32_t as far as the compiler is concerned because gcc has int32_t as long int
-  -Wno-unused-function # we have some for the docs that aren't called
-  -Wno-maybe-uninitialized
-  -Wno-missing-field-initializers
+  -Wextra
+  -Werror
   -Wno-unused-parameter
 )
 
@@ -46,8 +42,11 @@ add_executable(cross-table
   src/sdcard.cpp
 )
 
-# Generates header for pio
-# pico_generate_pio_header(cross-table ${CMAKE_CURRENT_LIST_DIR}/pio/rotary_encoder.pio)
+set_source_files_properties(
+  src/sdcard_config.cpp
+  PROPERTIES
+  COMPILE_FLAGS -Wno-missing-field-initializers
+)
 
 target_include_directories(cross-table PUBLIC include)
 target_link_libraries(
