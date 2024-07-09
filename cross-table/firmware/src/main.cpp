@@ -27,7 +27,6 @@
 #include <cstdio>
 
 
-
 void move_motor(StepMotorDriver &step, Axis &axis)
 {
     std::uint32_t remaining {0};
@@ -44,14 +43,12 @@ void move_motor(StepMotorDriver &step, Axis &axis)
     else {
         return;
     }
-
     remaining = step.rotate(direction, std::abs(pos));
     axis.incr_pulse(remaining * direction * -1);
 }
 
 
 int main() {
-    Buttons buttons;
 	LCDMenu lcd_menu;
     Position pos;
 
@@ -70,26 +67,9 @@ int main() {
     step_x.release();
     step_y.release();
 
-    auto manual_menu_entry_cb = [&pos](char *buf) {
-        pos.print(buf);
-    };
-
-    auto auto_menu_entry_cb = [](char *buf) {
-        std::sprintf(buf, "Reading sdcard");
-    };
-
-    lcd_menu.register_menu("<Manual>", manual_menu_entry_cb);
-    lcd_menu.register_menu("<Auto>", auto_menu_entry_cb);
-
-    while(true) {
-        int pressed;
-
-        lcd_menu.refresh();
-        if (buttons.menu.is_released()) {
-            lcd_menu.switch_entry();
-        }
-
-        pressed = buttons.x_minus.is_pressed();
+    auto manual_menu_entry_cb = [&pos, &step_x, &step_y, &lcd_menu](char *buf, Buttons &buttons)
+    {
+        int pressed = buttons.x_minus.is_pressed();
         if (pressed) {
             pos.x.incr_tenth(-1*pressed);
         }
@@ -129,6 +109,26 @@ int main() {
                 }
             }
         }
+        pos.print(buf);
+    };
+
+    auto auto_menu_entry_cb = [](char *buf, Buttons &buttons)
+    {
+        std::sprintf(buf, "Reading sdcard");
+    };
+
+    auto dialog1_menu_entry_cb = [](bool ok, bool reset, LCDMenu::EntryDialogItems &item)
+    {
+        return;
+    };
+
+    lcd_menu.register_display("<Manual>", manual_menu_entry_cb);
+    lcd_menu.register_display("<Auto>", auto_menu_entry_cb);
+    lcd_menu.register_dialog("<Dialog>", dialog1_menu_entry_cb, {{"key1", true}, {"key2", 1.0f}});
+
+    while(true) {
+        lcd_menu.refresh();
     }
+
     return 0;
 }

@@ -17,12 +17,15 @@
 #pragma once
 
 #include "cross-table/lcd_display.hpp"
+#include "cross-table/buttons.hpp"
 
 #include <memory>
 #include <functional>
 #include <vector>
 #include <utility>
 #include <string>
+#include <vector>
+#include <variant>
 #include <cstdint>
 #include <cstddef>
 
@@ -30,34 +33,52 @@
 class LCDMenu
 {
 public:
-    using EntryDisplayCallback = std::function<void(char *)>;
-    using MenuEntry = std::pair<std::string, EntryDisplayCallback>;
+    using EntryDialogItem = std::variant<bool, int, float>;
+    using EntryDialogItems = std::vector<std::pair<std::string, EntryDialogItem>>;
+    using EntryDialogCallback = std::function<void(bool /*ok*/, bool /*reset*/, EntryDialogItems&)>;
+    using EntryDisplayCallback = std::function<void(char *, Buttons &)>;
+
+private:
+    using EntryCallback = std::variant<EntryDisplayCallback, EntryDialogCallback>;
+
+    struct Entry
+    {
+        std::string name;
+        EntryCallback cb;
+        EntryDialogItems dialog_items;
+        std::uint32_t state {0};
+    };
+
+public:
 
 	/**
 	 * LCDMenu constructor.
-	 *
-	 * The lcd_display shows the menu and the footer information. The
-	 * rotary_encoder is used to navigate into the menu and button
-	 * validates menu entry modification.
-	 *
-	 * @param lcd_display, Unique pointer to LCDDisplay instance
-	 * @param rotary_encoder, Unique pointer to RotaryEncoder instance
-	 * @param button, Unique pointer to Switch instance
-	 * @param buzzer, Shared pointer to Buzzer instance
 	 */
 	LCDMenu();
 
-	/**
-	 * Add an entry in the menu to display/update a boolean variable.
-	 *
-	 * The entry is inserted at the beginning of the menu list. Entry
-	 * ID are affected starting from zero and is incremented after
-	 * each call to register_menu.
-	 *
-	 * @param title, menu title
-	 * @param variable, variable reference to display/update
-	 */
-	void register_menu(const std::string &title, EntryDisplayCallback cb);
+    /**
+     * Register a display item
+     *
+     * @param[in] title, item title string.
+     * @param[in] cb, callback.
+     */
+    void register_display(const std::string &title, EntryDisplayCallback cb)
+    {
+        Entry entry {.name=title, .cb=cb, .dialog_items={}};
+        m_menu_entries.emplace_back(entry);
+    }
+
+    /**
+     * Register a dialog item
+     *
+     * @param[in] title, item title string.
+     * @param[in] cb, callback.
+     */
+    void register_dialog(const std::string &title, EntryDialogCallback cb, const EntryDialogItems &dialog_items)
+    {
+        Entry entry {.name=title, .cb=cb, .dialog_items=dialog_items};
+        m_menu_entries.emplace_back(entry);
+    }
 
     /**
      * Switch to the next registered menu.
@@ -91,15 +112,22 @@ private:
 	 */
 	void refresh_menu();
 
-	/**
-	 * Refresh the footer notes
-	 */
-	void refresh_footer();
+    /**
+     * Print a dialog variant value
+     */
+    void print_variant(const EntryDialogItem &item);
+
+    /**
+     * Print a dialog variant value
+     */
+    void update_variant(int incr, int decr, EntryDialogItem &item);
+
 
 private:
 	LCDDisplay m_lcd_display;
-	std::vector<MenuEntry> m_menu_entries;
-	std::size_t m_current_entry_id;
+    Buttons m_buttons;
+	std::vector<Entry> m_menu_entries;
+    std::size_t m_current_entry_id;
 	bool m_is_refreshed{false};
 	bool m_is_splashed{false};
 };
