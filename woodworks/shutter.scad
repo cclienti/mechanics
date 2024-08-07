@@ -107,34 +107,33 @@ module shutter(first_width, blade_width, last_width, num_blades, length, thickne
 }
 
 
-// bar_pos = ((88.3+88.3*5+65)-520)/2;
-// color("White") {
-//     shutter(88.3, 88.3, 65, 7, 1278, 26);
-//     translate([bar_pos, 0, 145]) hbar(95, 520, 26, 5);
-//     translate([bar_pos, 0, 800+95+145]) hbar(95, 520, 26, 5);
-//     //translate([bar_pos, 0, 145+95]) zbar(800, 520, 95, 26, 5);
-//     translate([bar_pos+520, 0, 145+95]) mirror([1, 0, 0]) zbar(800, 520, 95, 26, 5);
-// }
-// color("White") {
-//     translate([1800, 0, 0]) {
-//         shutter(88.3, 88.3, 65, 7, 1278, 26);
-//         translate([bar_pos, 0, 145]) hbar(95, 520, 26, 5);
-//         translate([bar_pos, 0, 800+95+145]) hbar(95, 520, 26, 5);
-//         translate([bar_pos, 0, 145+95]) zbar(800, 520, 95, 26, 5);
-//     }
-// }
-
-bar_pos = ((495)-430)/2;
+bar_pos = ((88.3+88.3*5+65)-520)/2;
 color("White") {
-    shutter(70.9, 88.3, 70.9, 6, 1680, 26);
-    translate([bar_pos, 0, 1680-180.8-1295-95/2]) hbar(95, 430, 26, 5);
-    translate([bar_pos, 0, 1680-180.8-95/2]) hbar(95, 430, 26, 5);
-    translate([bar_pos+430, 0, 1680-180.8-1295+95/2]) mirror([1, 0, 0]) zbar(1295-95, 430, 95, 26, 5);
+    shutter(88.3, 88.3, 65, 7, 1278, 26);
+    translate([bar_pos, 0, 145]) hbar(95, 520, 26, 5);
+    translate([bar_pos, 0, 800+95+145]) hbar(95, 520, 26, 5);
+    translate([bar_pos+520, 0, 145+95]) mirror([1, 0, 0]) zbar(800, 520, 95, 26, 5);
 }
 color("White") {
-    translate([1495, 0, 0]) {    shutter(70.9, 88.3, 70.9, 6, 1680, 26);
-        translate([bar_pos, 0, 1680-180.8-1295-95/2]) hbar(95, 430, 26, 5);
-        translate([bar_pos, 0, 1680-180.8-95/2]) hbar(95, 430, 26, 5);
-        translate([bar_pos, 0, 1680-180.8-1295+95/2]) zbar(1295-95, 430, 95, 26, 5);
+    translate([1800, 0, 0]) {
+        shutter(88.3, 88.3, 65, 7, 1278, 26);
+        translate([bar_pos, 0, 145]) hbar(95, 520, 26, 5);
+        translate([bar_pos, 0, 800+95+145]) hbar(95, 520, 26, 5);
+        translate([bar_pos, 0, 145+95]) zbar(800, 520, 95, 26, 5);
     }
 }
+
+// bar_pos = ((495)-430)/2;
+// color("White") {
+//     shutter(70.9, 88.3, 70.9, 6, 1680, 26);
+//     translate([bar_pos, 0, 1680-180.8-1295-95/2]) hbar(95, 430, 26, 5);
+//     translate([bar_pos, 0, 1680-180.8-95/2]) hbar(95, 430, 26, 5);
+//     translate([bar_pos+430, 0, 1680-180.8-1295+95/2]) mirror([1, 0, 0]) zbar(1295-95, 430, 95, 26, 5);
+// }
+// color("White") {
+//     translate([1495, 0, 0]) {    shutter(70.9, 88.3, 70.9, 6, 1680, 26);
+//         translate([bar_pos, 0, 1680-180.8-1295-95/2]) hbar(95, 430, 26, 5);
+//         translate([bar_pos, 0, 1680-180.8-95/2]) hbar(95, 430, 26, 5);
+//         translate([bar_pos, 0, 1680-180.8-1295+95/2]) zbar(1295-95, 430, 95, 26, 5);
+//     }
+// }
