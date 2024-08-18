@@ -50,6 +50,8 @@ void move_motor(StepMotorDriver &step, Axis &axis)
 
 
 int main() {
+    stdio_init_all();
+
 	LCDMenu lcd_menu;
     Position pos;
 
@@ -62,9 +64,11 @@ int main() {
                            TableConfig::pin_step_y_dir,
                            TableConfig::pin_step_y_ena,
                            TableConfig::pin_step_limit_0);
-    SDCardReader sdreader;
 
-    stdio_init_all();
+    SDCardReader sdreader;
+    std::vector<std::string> files;
+    sdreader.list_files(files);
+
     step_x.release();
     step_y.release();
 
@@ -94,18 +98,6 @@ int main() {
             move_motor(step_x, pos.x);
             move_motor(step_y, pos.y);
             pos.set_ref();
-            std::vector<std::string> files;
-            sdreader.list_files(files);
-            std::vector<PulseUpdate> list;
-            auto rc = sdreader.read_positions(files[0], list);
-            if (rc == SDCardReader::ReadPosRc::Ok) {
-                for (const PulseUpdate &pos: list) {
-                    printf("x: %d, y: %d\n", pos.x, pos.y);
-                }
-            }
-            else {
-                printf("SDCardReader: %s\n", SDCardReader::read_rc_info(rc));
-            }
         }
 
         if (buttons.reset.is_released()) {
@@ -125,25 +117,28 @@ int main() {
         pos.print(buf);
     };
 
-    auto auto_menu_entry_cb = [](char *buf, Buttons &buttons)
-    {
-        std::sprintf(buf, "Reading sdcard");
-    };
-
     auto dialog1_menu_entry_cb = [](bool ok, bool reset, LCDMenu::EntryDialogItems &item)
     {
         return;
     };
 
-    auto select1_menu_entry_cb = [](const std::string value)
+    auto select1_menu_entry_cb = [&sdreader](const std::string value)
     {
-        printf("Selected value: %s", value.c_str());
+        std::vector<PulseUpdate> list;
+        auto rc = sdreader.read_positions(value, list);
+            if (rc == SDCardReader::ReadPosRc::Ok) {
+                for (const PulseUpdate &pos: list) {
+                    printf("x: %d, y: %d\n", pos.x, pos.y);
+                }
+            }
+            else {
+                printf("SDCardReader: %s\n", SDCardReader::read_rc_info(rc));
+            }
     };
 
-    lcd_menu.register_display("<Manual>", manual_menu_entry_cb);
-    lcd_menu.register_display("<Auto>", auto_menu_entry_cb);
+    lcd_menu.register_display("<Position>", manual_menu_entry_cb);
     lcd_menu.register_dialog("<Dialog>", dialog1_menu_entry_cb, {{"key1", true}, {"key2", 1.0F}});
-    lcd_menu.register_select("<Select>", select1_menu_entry_cb, {"Value1", "Value2", "Value3"});
+    lcd_menu.register_select("<Load from SD>", select1_menu_entry_cb, files);
 
     while(true) {
         lcd_menu.refresh();

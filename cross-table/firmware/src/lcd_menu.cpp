@@ -225,9 +225,8 @@ void LCDMenu::refresh_menu()
         m_lcd_display.set_pos(1, 9);
         m_lcd_display.print("\1");
 
-        std::string value = item.substr(0, m_lcd_display.get_num_cols());
-        int pos = (m_lcd_display.get_num_cols() - value.size()) / 2;
-        m_lcd_display.set_pos(2, pos);
+        std::string value = format_info(item, m_lcd_display.get_num_cols(), ' ');
+        m_lcd_display.set_pos(2, 0);
         m_lcd_display.print(value.c_str()); // TODO Truncate string if needed.
 
         m_lcd_display.set_pos(3, 9);

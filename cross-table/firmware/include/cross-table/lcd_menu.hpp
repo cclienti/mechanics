@@ -40,7 +40,7 @@ public:
     using EntryDisplayCallback = std::function<void(char *, Buttons &)>;
 
     using EntrySelectValues = std::vector<std::string>;
-    using EntrySelectCallback = std::function<void(std::string /*item selected*/)>;
+    using EntrySelectCallback = std::function<void(std::string /*value_selected*/)>;
 
 private:
     using EntryCallback = std::variant<

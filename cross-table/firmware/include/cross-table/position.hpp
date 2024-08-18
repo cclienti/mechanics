@@ -137,7 +137,7 @@ struct Position
     }
 
     void print(char *buffer) {
-        buffer += sprintf(buffer, "    -Rel-      -Abs-\n");
+        buffer += sprintf(buffer, "    -Rel-     -Abs- \n");
         buffer += sprintf(buffer, "X: ");
         buffer += x.print(buffer);
         buffer += sprintf(buffer, "\nY: ");
