@@ -71,22 +71,22 @@ int main() {
     {
         int pressed = buttons.x_minus.is_pressed();
         if (pressed != 0) {
-            pos.x.incr_tenth(-1*pressed);
+            pos.x.incr_half_tenth(-1*pressed);
         }
 
         pressed = buttons.x_plus.is_pressed();
         if (pressed != 0) {
-            pos.x.incr_tenth(pressed);
+            pos.x.incr_half_tenth(pressed);
         }
 
         pressed = buttons.y_minus.is_pressed();
         if (pressed != 0) {
-            pos.y.incr_tenth(-1*pressed);
+            pos.y.incr_half_tenth(-1*pressed);
         }
 
         pressed = buttons.y_plus.is_pressed();
         if (pressed != 0) {
-            pos.y.incr_tenth(pressed);
+            pos.y.incr_half_tenth(pressed);
         }
 
         if (buttons.ok.is_released()) {

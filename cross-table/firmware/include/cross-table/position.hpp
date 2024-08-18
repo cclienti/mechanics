@@ -40,6 +40,11 @@ struct Axis
         abs_pos += val;
     }
 
+    void incr_half_tenth(int val)
+    {
+        abs_pos += val * (TableConfig::pulses_per_half_tenth);
+    }
+
     void incr_tenth(int val)
     {
         abs_pos += val * TableConfig::pulses_per_tenth;

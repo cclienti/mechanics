@@ -37,6 +37,11 @@ struct TableConfig
     static constexpr std::uint32_t pulses_per_tenth = pulses_per_rev / tenth_dist_per_rev;
 
     /**
+     * @brief Number of pulse for one tenth of a millimeter.
+     */
+    static constexpr std::uint32_t pulses_per_half_tenth = pulses_per_tenth >> 1;
+
+    /**
      * @brief I2C bus pin SCL
      */
     static constexpr std::uint32_t pin_i2c_scl = 1;
