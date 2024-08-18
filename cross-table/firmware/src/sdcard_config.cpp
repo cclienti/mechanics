@@ -19,7 +19,7 @@
 /* Configuration of RP2040 hardware SPI object */
 static spi_t spi = {
     .hw_inst                  = spi0,  // RP2040 SPI component
-    .miso_gpio                = 4     ,// GPIO number (not Pico pin number)
+    .miso_gpio                = 4,     // GPIO number (not Pico pin number)
     .mosi_gpio                = 3,
     .sck_gpio                 = 2,
     .baud_rate                = 12 * 1000 * 1000,   // Actual frequency: 10416666.
@@ -38,8 +38,7 @@ static sd_spi_if_t spi_if = {
 static sd_card_t sd_card = {
     .type            = SD_IF_SPI,
     .spi_if_p        = &spi_if,  // Pointer to the SPI interface driving this card
-    .use_card_detect = false,
-
+    .use_card_detect = false
 };
 
 size_t sd_get_num() { return 1; }

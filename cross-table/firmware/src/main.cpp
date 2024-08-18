@@ -62,12 +62,13 @@ int main() {
                            TableConfig::pin_step_y_dir,
                            TableConfig::pin_step_y_ena,
                            TableConfig::pin_step_limit_0);
+    SDCardReader sdreader;
 
     stdio_init_all();
     step_x.release();
     step_y.release();
 
-    auto manual_menu_entry_cb = [&pos, &step_x, &step_y, &lcd_menu](char *buf, Buttons &buttons)
+    auto manual_menu_entry_cb = [&sdreader, &pos, &step_x, &step_y, &lcd_menu](char *buf, Buttons &buttons)
     {
         int pressed = buttons.x_minus.is_pressed();
         if (pressed != 0) {
@@ -93,9 +94,10 @@ int main() {
             move_motor(step_x, pos.x);
             move_motor(step_y, pos.y);
             pos.set_ref();
-            SDCardReader sdreader;
+            std::vector<std::string> files;
+            sdreader.list_files(files);
             std::vector<PulseUpdate> list;
-            auto rc = sdreader.read_positions("cross-table.txt", list);
+            auto rc = sdreader.read_positions(files[0], list);
             if (rc == SDCardReader::ReadPosRc::Ok) {
                 for (const PulseUpdate &pos: list) {
                     printf("x: %d, y: %d\n", pos.x, pos.y);

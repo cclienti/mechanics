@@ -40,7 +40,7 @@ public:
     /**
      * @brief Get the list of filenames found in the sdcard
      */
-    void list_files(std::vector<std::string> files);
+    void list_files(std::vector<std::string> &files);
 
     /**
      * @brief Get the list of position updates read in the sdcard.

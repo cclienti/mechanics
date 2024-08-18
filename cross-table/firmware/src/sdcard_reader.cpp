@@ -19,11 +19,11 @@
 
 #include "ff.h"
 #include "sd_card.h"
-#include "hw_config.h"
 
 #include <memory>
 #include <cstring>
 #include <cstdio>
+
 
 namespace
 {
@@ -67,30 +67,51 @@ SDCardReader::SDCardReader():
     m_pfs  (std::make_unique<ImplFATFS>()),
     m_buffer (std::make_unique<char[]>(s_buffer_len))
 {
-    f_mount(&m_pfs->impl, "", 1);
+    auto res = f_mount(&m_pfs->impl, "", 1);
+    if (res == FR_NOT_READY) {
+        // no sdcard inserted
+    }
+    else if (res == FR_DISK_ERR) {
+        // sdcard ejected an reinserted but it's not working.
+    }
+    printf("res = %d\n", res);
 }
 
 // The destructor cannot be marked as default in the header as the
 // unique_ptr<ImplFATFS> is declared with a forward declaration and is
 // not fully known (in case destructor would be inlined).
-SDCardReader::~SDCardReader() = default;
+SDCardReader::~SDCardReader()
+{
+    f_unmount("");
+}
 
 
-void SDCardReader::list_files(std::vector<std::string> files)
+void SDCardReader::list_files(std::vector<std::string> &files)
 {
     files.clear();
+    DIR dir;
+    FILINFO finfo;
+    auto res = f_findfirst(&dir, &finfo, "", "*.*");
+    while (res == FR_OK && finfo.fname[0] != '\0') {
+        printf("%s\n", finfo.fname);
+        files.emplace_back(finfo.fname);
+        res = f_findnext(&dir, &finfo);
+    }
+    f_closedir(&dir);
 }
 
 
 // Hereafter the file format supported.
 //
 //   # First non comment line must specify the machine info: <pulses per tenth of a millimeter>
-//   50
+//   32
 //   # Coordinates of each move in number of pulses (signed int): <x> <y>
 //   -500 1000
 //   # ...
 
-SDCardReader::ReadPosRc SDCardReader::read_positions(const std::string &filename, std::vector<PulseUpdate> &updates)
+SDCardReader::ReadPosRc SDCardReader::read_positions(
+    const std::string &filename, std::vector<PulseUpdate> &updates
+)
 {
     char *pbuf = m_buffer.get();
 
