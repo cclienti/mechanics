@@ -105,7 +105,7 @@ void LCDMenu::splash(const std::string &text)
 }
 
 
-void LCDMenu::print_variant(const EntryDialogItem &item)
+void LCDMenu::dialog_print_variant(const EntryDialogItem &item)
 {
     if (std::holds_alternative<bool>(item)) {
         if (std::get<bool>(item)) {
@@ -122,7 +122,7 @@ void LCDMenu::print_variant(const EntryDialogItem &item)
     }
 }
 
-void LCDMenu::update_variant(int incr, int decr, EntryDialogItem &item)
+void LCDMenu::dialog_update_variant(int incr, int decr, EntryDialogItem &item)
 {
     if (std::holds_alternative<bool>(item)) {
         if (incr > 0) {
@@ -182,7 +182,7 @@ void LCDMenu::refresh_menu()
         m_lcd_display.set_pos(2, 0);
         m_lcd_display.print(item.first.c_str()); // TODO Truncate string if needed.
         m_lcd_display.set_pos(2, 14);
-        print_variant(item.second);
+        dialog_print_variant(item.second);
         m_lcd_display.set_pos(3, 9);
         m_lcd_display.print("\2");
 
@@ -205,7 +205,7 @@ void LCDMenu::refresh_menu()
         }
 
         // Update current value
-        update_variant(m_buttons.x_plus.is_pressed(), m_buttons.x_minus.is_pressed(), item.second);
+        dialog_update_variant(m_buttons.x_plus.is_pressed(), m_buttons.x_minus.is_pressed(), item.second);
 
         // Handle callback
         auto ok_released = m_buttons.ok.is_released();

@@ -115,12 +115,12 @@ private:
     /**
      * Print a dialog variant value
      */
-    void print_variant(const EntryDialogItem &item);
+    void dialog_print_variant(const EntryDialogItem &item);
 
     /**
      * Print a dialog variant value
      */
-    void update_variant(int incr, int decr, EntryDialogItem &item);
+    void dialog_update_variant(int incr, int decr, EntryDialogItem &item);
 
 
 private:
