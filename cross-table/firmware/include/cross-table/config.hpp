@@ -24,7 +24,7 @@ struct TableConfig
     /**
      * @brief Number of step motor pulse per revolution.
      */
-    static constexpr std::uint32_t pulse_per_rev = 1600;
+    static constexpr std::uint32_t pulses_per_rev = 1600;
 
     /**
      * @brief Distance in tenth of a millimeter per revolution.
@@ -34,7 +34,7 @@ struct TableConfig
     /**
      * @brief Number of pulse for one tenth of a millimeter.
      */
-    static constexpr std::uint32_t pulse_per_tenth = pulse_per_rev / tenth_dist_per_rev;
+    static constexpr std::uint32_t pulses_per_tenth = pulses_per_rev / tenth_dist_per_rev;
 
     /**
      * @brief I2C bus pin SCL

@@ -19,12 +19,13 @@
 #include "cross-table/position.hpp"
 #include "cross-table/stepper.hpp"
 #include "cross-table/config.hpp"
-#include "cross-table/sdcard.hpp"
+#include "cross-table/sdcard_reader.hpp"
 
 #include "pico/stdio.h"
 
 #include <cstdint>
 #include <cstdio>
+#include <cstdlib>
 
 
 void move_motor(StepMotorDriver &step, Axis &axis)
@@ -63,29 +64,28 @@ int main() {
                            TableConfig::pin_step_limit_0);
 
     stdio_init_all();
-
     step_x.release();
     step_y.release();
 
     auto manual_menu_entry_cb = [&pos, &step_x, &step_y, &lcd_menu](char *buf, Buttons &buttons)
     {
         int pressed = buttons.x_minus.is_pressed();
-        if (pressed) {
+        if (pressed != 0) {
             pos.x.incr_tenth(-1*pressed);
         }
 
         pressed = buttons.x_plus.is_pressed();
-        if (pressed) {
+        if (pressed != 0) {
             pos.x.incr_tenth(pressed);
         }
 
         pressed = buttons.y_minus.is_pressed();
-        if (pressed) {
+        if (pressed != 0) {
             pos.y.incr_tenth(-1*pressed);
         }
 
         pressed = buttons.y_plus.is_pressed();
-        if (pressed) {
+        if (pressed != 0) {
             pos.y.incr_tenth(pressed);
         }
 
@@ -93,6 +93,17 @@ int main() {
             move_motor(step_x, pos.x);
             move_motor(step_y, pos.y);
             pos.set_ref();
+            SDCardReader sdreader;
+            std::vector<PulseUpdate> list;
+            auto rc = sdreader.read_positions("cross-table.txt", list);
+            if (rc == SDCardReader::ReadPosRc::Ok) {
+                for (const PulseUpdate &pos: list) {
+                    printf("x: %d, y: %d\n", pos.x, pos.y);
+                }
+            }
+            else {
+                printf("SDCardReader: %s\n", SDCardReader::read_rc_info(rc));
+            }
         }
 
         if (buttons.reset.is_released()) {
@@ -124,7 +135,7 @@ int main() {
 
     lcd_menu.register_display("<Manual>", manual_menu_entry_cb);
     lcd_menu.register_display("<Auto>", auto_menu_entry_cb);
-    lcd_menu.register_dialog("<Dialog>", dialog1_menu_entry_cb, {{"key1", true}, {"key2", 1.0f}});
+    lcd_menu.register_dialog("<Dialog>", dialog1_menu_entry_cb, {{"key1", true}, {"key2", 1.0F}});
 
     while(true) {
         lcd_menu.refresh();

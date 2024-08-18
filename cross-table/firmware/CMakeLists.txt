@@ -39,7 +39,7 @@ add_executable(cross-table
   src/lcd_menu.cpp
   src/main.cpp
   src/sdcard_config.cpp
-  src/sdcard.cpp
+  src/sdcard_reader.cpp
 )
 
 set_source_files_properties(
