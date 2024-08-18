@@ -27,10 +27,12 @@ struct Axis
     int abs_pos {0};
     int abs_ref {0};
 
-    static void decimal(const int value, int &integer, int &frac)
+    static void decimal(const float value, const int precision, char &sign, int &integer, int &frac)
     {
-        integer = value / 10;
-        frac = value % 10;
+        sign = value < 0 ? '-' : '+';
+        auto abs_value = std::abs(value);
+        integer = static_cast<int>(abs_value);
+        frac = static_cast<int>(abs_value * precision) % precision;
     }
 
     void incr_pulse(int val)
@@ -40,7 +42,7 @@ struct Axis
 
     void incr_tenth(int val)
     {
-        abs_pos += val * TableConfig::pulse_per_tenth;
+        abs_pos += val * TableConfig::pulses_per_tenth;
     }
 
     void reset(void) {
@@ -58,21 +60,54 @@ struct Axis
         return abs_pos - abs_ref;
     }
 
+    float rel_float_pos() const
+    {
+        return static_cast<float>(rel_pulse_pos()) / (TableConfig::pulses_per_tenth * 10);
+    }
+
+    float abs_float_pos() const
+    {
+        return static_cast<float>(abs_pos) / (TableConfig::pulses_per_tenth * 10);
+    }
+
     int print(char *buffer)
     {
-        auto rel = rel_pulse_pos();
-        char abs_sign = abs_pos < 0 ? '-' : ' ';
-        char rel_sign = rel < 0 ? '-' : ' ';
-        int abs_integer, abs_frac;
-        int rel_integer, rel_frac;
-        decimal(std::abs(abs_pos)/TableConfig::pulse_per_tenth,
-                abs_integer, abs_frac);
-        decimal(std::abs(rel)/TableConfig::pulse_per_tenth,
-                rel_integer, rel_frac);
-        return sprintf(buffer, "%c%03d.%1d     %c%03d.%1d",
-                       rel_sign, rel_integer, rel_frac,
-                       abs_sign, abs_integer, abs_frac);
+        char rel_sign;
+        int rel_int, rel_frac;
+        decimal(rel_float_pos(), 100, rel_sign, rel_int, rel_frac);
+
+        char abs_sign;
+        int abs_int, abs_frac;
+        decimal(abs_float_pos(), 100, abs_sign, abs_int, abs_frac);
+
+        return sprintf(buffer, "%c%03d.%02d   %c%03d.%02d",
+                       rel_sign, rel_int, rel_frac,
+                       abs_sign, abs_int, abs_frac);
     }
+};
+
+
+struct PulseUpdate
+{
+    PulseUpdate(int x_pulse, int y_pulse) :
+        x (x_pulse),
+        y (y_pulse)
+    {
+    }
+    int x;
+    int y;
+};
+
+
+struct TenthUpdate
+{
+    TenthUpdate(int x_tenth, int y_tenth) :
+        x (x_tenth),
+        y (y_tenth)
+    {
+    }
+    int x;
+    int y;
 };
 
 
@@ -81,12 +116,16 @@ struct Position
     Axis x;
     Axis y;
 
-    void reset(void) {
+    template<class TPosUp> void update(const TPosUp &pos_up) = delete;
+
+    template<class TPosUp> void rollback(const TPosUp &pos_rol) = delete;
+
+    void reset() {
         x.reset();
         y.reset();
     }
 
-    void set_ref(void)
+    void set_ref()
     {
         x.set_ref();
         y.set_ref();
@@ -101,3 +140,35 @@ struct Position
     }
 
 };
+
+template<> inline void Position::update<PulseUpdate>(const PulseUpdate &pos_up)
+{
+    x.incr_pulse(pos_up.x);
+    x.set_ref();
+    y.incr_pulse(pos_up.y);
+    y.set_ref();
+}
+
+template<> inline void Position::update<TenthUpdate>(const TenthUpdate &pos_up)
+{
+    x.incr_tenth(pos_up.x);
+    x.set_ref();
+    y.incr_tenth(pos_up.y);
+    y.set_ref();
+}
+
+template<> inline void Position::rollback<PulseUpdate>(const PulseUpdate &pos_rollb)
+{
+    x.incr_pulse(-pos_rollb.x);
+    x.set_ref();
+    y.incr_pulse(-pos_rollb.y);
+    y.set_ref();
+}
+
+template<> inline void Position::rollback<TenthUpdate>(const TenthUpdate &pos_rollb)
+{
+    x.incr_tenth(-pos_rollb.x);
+    x.set_ref();
+    y.incr_tenth(-pos_rollb.y);
+    y.set_ref();
+}
