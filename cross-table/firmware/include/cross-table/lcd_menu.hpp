@@ -36,16 +36,23 @@ public:
     using EntryDialogItem = std::variant<bool, int, float>;
     using EntryDialogItems = std::vector<std::pair<std::string, EntryDialogItem>>;
     using EntryDialogCallback = std::function<void(bool /*ok*/, bool /*reset*/, EntryDialogItems&)>;
+
     using EntryDisplayCallback = std::function<void(char *, Buttons &)>;
 
+    using EntrySelectValues = std::vector<std::string>;
+    using EntrySelectCallback = std::function<void(std::string /*item selected*/)>;
+
 private:
-    using EntryCallback = std::variant<EntryDisplayCallback, EntryDialogCallback>;
+    using EntryCallback = std::variant<
+        EntryDisplayCallback, EntryDialogCallback, EntrySelectCallback
+    >;
 
     struct Entry
     {
         std::string name;
         EntryCallback cb;
-        EntryDialogItems dialog_items;
+        EntryDialogItems dialog_items {};
+        EntrySelectValues select_values {};
         std::uint32_t state {0};
     };
 
@@ -64,7 +71,7 @@ public:
      */
     void register_display(const std::string &title, EntryDisplayCallback cb)
     {
-        Entry entry {.name=title, .cb=cb, .dialog_items={}};
+        Entry entry {.name=title, .cb=cb};
         m_menu_entries.emplace_back(entry);
     }
 
@@ -77,6 +84,20 @@ public:
     void register_dialog(const std::string &title, EntryDialogCallback cb, const EntryDialogItems &dialog_items)
     {
         Entry entry {.name=title, .cb=cb, .dialog_items=dialog_items};
+        m_menu_entries.emplace_back(entry);
+    }
+
+    /**
+     * Register select item
+     *
+     * @param[in] title, item title string.
+     * @param[in] cb, callback.
+     */
+    void register_select(
+        const std::string &title, EntrySelectCallback cb, const EntrySelectValues &select_values
+    )
+    {
+        Entry entry {.name=title, .cb=cb, .select_values=select_values};
         m_menu_entries.emplace_back(entry);
     }
 

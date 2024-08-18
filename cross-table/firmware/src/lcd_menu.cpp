@@ -215,4 +215,47 @@ void LCDMenu::refresh_menu()
             cb(ok_released, reset_released, entry.dialog_items);
         }
     }
+    else if (std::holds_alternative<EntrySelectCallback>(cb_variant)) {
+        if (entry.select_values.empty()) {
+            return;
+        }
+
+        // Select the right item depending on the state
+        auto &item = entry.select_values[entry.state];
+        m_lcd_display.set_pos(1, 9);
+        m_lcd_display.print("\1");
+
+        std::string value = item.substr(0, m_lcd_display.get_num_cols());
+        int pos = (m_lcd_display.get_num_cols() - value.size()) / 2;
+        m_lcd_display.set_pos(2, pos);
+        m_lcd_display.print(value.c_str()); // TODO Truncate string if needed.
+
+        m_lcd_display.set_pos(3, 9);
+        m_lcd_display.print("\2");
+
+        // Switch between dialog item
+        if (m_buttons.y_plus.is_released()) {
+            if (entry.state == 0) {
+                entry.state = entry.select_values.size()-1;
+            }
+            else {
+                entry.state--;
+            }
+        }
+        if (m_buttons.y_minus.is_released()) {
+            if (entry.state == entry.select_values.size()-1) {
+                entry.state = 0;
+            }
+            else {
+                entry.state++;
+            }
+        }
+
+        // Handle callback
+        auto ok_released = m_buttons.ok.is_released();
+        if (ok_released) {
+            auto cb = std::get<EntrySelectCallback>(cb_variant);
+            cb(item);
+        }
+    }
 }

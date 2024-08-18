@@ -135,9 +135,15 @@ int main() {
         return;
     };
 
+    auto select1_menu_entry_cb = [](const std::string value)
+    {
+        printf("Selected value: %s", value.c_str());
+    };
+
     lcd_menu.register_display("<Manual>", manual_menu_entry_cb);
     lcd_menu.register_display("<Auto>", auto_menu_entry_cb);
     lcd_menu.register_dialog("<Dialog>", dialog1_menu_entry_cb, {{"key1", true}, {"key2", 1.0F}});
+    lcd_menu.register_select("<Select>", select1_menu_entry_cb, {"Value1", "Value2", "Value3"});
 
     while(true) {
         lcd_menu.refresh();
