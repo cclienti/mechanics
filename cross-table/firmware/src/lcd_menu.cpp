@@ -16,6 +16,8 @@
 
 #include "cross-table/lcd_menu.hpp"
 
+#include <pico/time.h>
+
 #include <string>
 #include <cstdint>
 
@@ -89,7 +91,7 @@ void LCDMenu::refresh()
 }
 
 
-void LCDMenu::splash(const std::string &text)
+void LCDMenu::splash(const std::string &text, std::uint32_t milliseconds)
 {
 	if (m_is_refreshed) {
 		m_lcd_display.clear();
@@ -102,6 +104,9 @@ void LCDMenu::splash(const std::string &text)
 
     std::string splash = "[" + text + "]";
 	m_lcd_display.print(format_info(splash, m_lcd_display.get_num_cols(), '-'));
+    if (milliseconds > 0) {
+        sleep_ms(milliseconds);
+    }
 }
 
 
@@ -109,16 +114,16 @@ void LCDMenu::dialog_print_variant(const EntryDialogItem &item)
 {
     if (std::holds_alternative<bool>(item)) {
         if (std::get<bool>(item)) {
-            m_lcd_display.printf("    ON");
+            m_lcd_display.printf("     ON");
         } else {
-            m_lcd_display.printf("   OFF");
+            m_lcd_display.printf("    OFF");
         }
     }
     else if (std::holds_alternative<int>(item)) {
-        m_lcd_display.printf("%6d", std::get<int>(item));
+        m_lcd_display.printf("%7d", std::get<int>(item));
     }
     else if (std::holds_alternative<float>(item)) {
-        m_lcd_display.printf("%6.01f", std::get<float>(item));
+        m_lcd_display.printf("%+7.02f", std::get<float>(item));
     }
 }
 
@@ -137,9 +142,15 @@ void LCDMenu::dialog_update_variant(int incr, int decr, EntryDialogItem &item)
         item = v + incr - decr;
     }
     else if (std::holds_alternative<float>(item)) {
+        constexpr float clip_val = 999.95F;
         float v = std::get<float>(item);
-        v = (v * 10.0f + incr - decr) * 0.1f;
-        item = v;
+        v = (v * 20.0f + incr - decr) * 0.05f;
+        if (std::abs(v) <= clip_val) {
+            item = v;
+        }
+        else {
+            item = (v < 0 ? -1 : 1) * clip_val;
+        }
     }
 }
 
@@ -180,8 +191,8 @@ void LCDMenu::refresh_menu()
         m_lcd_display.set_pos(1, 9);
         m_lcd_display.print("\1");
         m_lcd_display.set_pos(2, 0);
-        m_lcd_display.print(item.first.c_str()); // TODO Truncate string if needed.
-        m_lcd_display.set_pos(2, 14);
+        m_lcd_display.print(format_info(item.first, 13, ' '));
+        m_lcd_display.set_pos(2, 13);
         dialog_print_variant(item.second);
         m_lcd_display.set_pos(3, 9);
         m_lcd_display.print("\2");
@@ -227,7 +238,7 @@ void LCDMenu::refresh_menu()
 
         std::string value = format_info(item, m_lcd_display.get_num_cols(), ' ');
         m_lcd_display.set_pos(2, 0);
-        m_lcd_display.print(value.c_str()); // TODO Truncate string if needed.
+        m_lcd_display.print(value.c_str());
 
         m_lcd_display.set_pos(3, 9);
         m_lcd_display.print("\2");

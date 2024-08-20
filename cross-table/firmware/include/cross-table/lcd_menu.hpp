@@ -125,7 +125,7 @@ public:
 	 *
 	 * @param text, splash screen text.
 	 */
-	void splash(const std::string &text);
+	void splash(const std::string &text, std::uint32_t milliseconds=0);
 
 private:
 	/**

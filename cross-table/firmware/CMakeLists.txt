@@ -28,36 +28,47 @@ pico_sdk_init()
 add_subdirectory(no-OS-FatFS-SD-SDIO-SPI-RPi-Pico/src)
 
 add_compile_options(
-  -Wall
-  -Wextra
-  -Werror
-  -Wno-unused-parameter
+    -Wall
+    -Wextra
+    -Werror
+    -Wno-unused-parameter
 )
 
+# ---------------------------------------------------
+# Main executable
+# ---------------------------------------------------
 add_executable(cross-table
-  src/lcd_display.cpp
-  src/lcd_menu.cpp
-  src/main.cpp
-  src/sdcard_config.cpp
-  src/sdcard_reader.cpp
+    src/lcd_display.cpp
+    src/lcd_menu.cpp
+    src/main.cpp
+    src/sdcard_config.cpp
+    src/sdcard_reader.cpp
 )
-
 set_source_files_properties(
-  src/sdcard_config.cpp
-  PROPERTIES
-  COMPILE_FLAGS -Wno-missing-field-initializers
+    src/sdcard_config.cpp
+    PROPERTIES
+    COMPILE_FLAGS -Wno-missing-field-initializers
 )
-
 target_include_directories(cross-table PUBLIC include)
 target_link_libraries(
-  cross-table PRIVATE
-  pico_stdlib hardware_pwm hardware_i2c hardware_spi hardware_pio
-  no-OS-FatFS-SD-SDIO-SPI-RPi-Pico
+    cross-table PRIVATE
+    pico_stdlib hardware_pwm hardware_i2c hardware_spi hardware_pio
+    no-OS-FatFS-SD-SDIO-SPI-RPi-Pico
 )
-
 # create map/bin/hex/uf2 file in addition to ELF.
 pico_add_extra_outputs(cross-table)
-
 # add uart
 pico_enable_stdio_usb(cross-table 1)
 pico_enable_stdio_uart(cross-table 0)
+
+# ---------------------------------------------------
+# Tests
+# ---------------------------------------------------
+add_executable(test-position-handler
+    tests/test_position_handler.cpp
+)
+target_include_directories(test-position-handler PUBLIC include)
+target_link_libraries(test-position-handler PRIVATE pico_stdlib)
+pico_add_extra_outputs(test-position-handler)
+pico_enable_stdio_usb(test-position-handler 1)
+pico_enable_stdio_uart(test-position-handler 0)
