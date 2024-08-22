@@ -35,7 +35,10 @@ class LCDMenu
 public:
     using EntryDialogItem = std::variant<bool, int, float>;
     using EntryDialogItems = std::vector<std::pair<std::string, EntryDialogItem>>;
-    using EntryDialogCallback = std::function<void(bool /*ok*/, bool /*reset*/, EntryDialogItems&)>;
+    using EntryDialogCallback =
+        std::function<void(Switch::PressInfo /*ok_released*/,
+                           Switch::PressInfo /*reset_released*/,
+                           EntryDialogItems&)>;
 
     using EntryDisplayCallback = std::function<void(char *, Buttons &)>;
 

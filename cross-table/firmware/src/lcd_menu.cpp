@@ -216,12 +216,15 @@ void LCDMenu::refresh_menu()
         }
 
         // Update current value
-        dialog_update_variant(m_buttons.x_plus.is_pressed(), m_buttons.x_minus.is_pressed(), item.second);
+        dialog_update_variant(static_cast<int>(m_buttons.x_plus.is_pressed()),
+                              static_cast<int>(m_buttons.x_minus.is_pressed()), item.second);
 
         // Handle callback
-        auto ok_released = m_buttons.ok.is_released();
-        auto reset_released = m_buttons.ok.is_released();
-        if (ok_released || reset_released) {
+        Switch::PressInfo ok_released;
+        Switch::PressInfo reset_released;
+        m_buttons.ok.is_released(ok_released);
+        m_buttons.ok.is_released(reset_released);
+        if (ok_released != Switch::PressInfo::No || reset_released != Switch::PressInfo::No) {
             auto cb = std::get<EntryDialogCallback>(cb_variant);
             cb(ok_released, reset_released, entry.dialog_items);
         }

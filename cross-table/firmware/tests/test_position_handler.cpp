@@ -78,12 +78,18 @@ bool test_1(void)
     printf("- Simulate Prev -\n");
     printf("-----------------\n");
     // One more iteration whereas the vector has only two positions.
-    for (int i=0; i<4; i++) {
-        pos.rollback();
-        if (pos_handler.prev()) {
-            pos_handler.revert_rel_pos(pos);
+    for (int i=0; i<5; i++) {
+        if (pos_handler.is_counter_pos(pos)) {
             move_motors(pos, false);
         }
+        else {
+            pos.rollback();
+        }
+
+        if (pos_handler.prev()) {
+            pos_handler.revert_rel_pos(pos);
+        }
+
         print_pos(pos);
         printf("\n");
     }

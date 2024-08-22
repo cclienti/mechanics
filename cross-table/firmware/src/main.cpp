@@ -20,6 +20,7 @@
 #include "cross-table/stepper.hpp"
 #include "cross-table/config.hpp"
 #include "cross-table/sdcard_reader.hpp"
+#include "cross-table/math_func.hpp"
 
 #include "pico/stdio.h"
 
@@ -83,8 +84,11 @@ int main() {
                            TableConfig::pin_step_limit_0);
     bool motor_dry_run = true;
 
+    constexpr int splash_time = 2000;
+
     SDCardReader sdreader;
     std::vector<std::string> files;
+    std::vector<PulseUpdate> list_positions;
     sdreader.list_files(files);
     step_x.release();
     step_y.release();
@@ -98,47 +102,73 @@ int main() {
         // Preload the first PulseUpdate if the PositionHandler has
         // been set.
         if (pos_handler.changed()) {
+            pos.reset();
             pos_handler.next();
             pos_handler.update_rel_pos(pos);
         }
 
         // Handle +/- buttons for X/Y axis
-        int pressed = buttons.x_minus.is_pressed();
+        int pressed = static_cast<int>(buttons.x_minus.is_pressed());
         if (pressed != 0) {
             pos.x.incr_half_tenth(-1*pressed);
         }
 
-        pressed = buttons.x_plus.is_pressed();
+        pressed = static_cast<int>(buttons.x_plus.is_pressed());
         if (pressed != 0) {
             pos.x.incr_half_tenth(pressed);
         }
 
-        pressed = buttons.y_minus.is_pressed();
+        pressed = static_cast<int>(buttons.y_minus.is_pressed());
         if (pressed != 0) {
             pos.y.incr_half_tenth(-1*pressed);
         }
 
-        pressed = buttons.y_plus.is_pressed();
+        pressed = static_cast<int>(buttons.y_plus.is_pressed());
         if (pressed != 0) {
             pos.y.incr_half_tenth(pressed);
         }
 
         // Handle Ok button
         if (buttons.ok.is_released()) {
-            auto up = move_motors(step_x, step_y, pos, motor_dry_run);
-            pos_handler.commit(up);
+            auto upd = move_motors(step_x, step_y, pos, motor_dry_run);
+            pos_handler.commit(upd);
             if (pos_handler.next()) {
                 pos_handler.update_rel_pos(pos);
             }
         }
 
         // Handle Reset button
-        if (buttons.reset.is_released()) {
-            pos.rollback();
-            if (pos_handler.prev()) {
-                pos_handler.revert_rel_pos(pos);
+        Switch::PressInfo press_info;
+        buttons.reset.is_released(press_info);
+        switch (press_info) {
+        case Switch::PressInfo::Short:
+            if (pos_handler.is_counter_pos(pos)) {
                 move_motors(step_x, step_y, pos, motor_dry_run);
             }
+            else {
+                pos.rollback();
+            }
+            if (pos_handler.prev()) {
+                pos_handler.revert_rel_pos(pos);
+            }
+            break;
+        case Switch::PressInfo::Long:
+            lcd_menu.splash("Reset positions?");
+            while (true) {
+                if (buttons.ok.is_released()) {
+                    pos_handler.set({});
+                    pos.reset();
+                    lcd_menu.splash("Done", splash_time);
+                    break;
+                }
+                if (buttons.reset.is_released()) {
+                    lcd_menu.splash("Canceled", splash_time);
+                    break;
+                }
+            }
+            break;
+        default:
+            break;
         }
 
         pos.print(buf);
@@ -148,37 +178,69 @@ int main() {
     // ------------------------------------
     // Handle holes on a line dialog
     // ------------------------------------
-    auto dialog1_menu_entry_cb = []
-        (bool ok, bool reset, LCDMenu::EntryDialogItems &item)
+    auto holes_on_a_line_entry_cb = [&list_positions, &pos_handler, &lcd_menu, &splash_time]
+    (Switch::PressInfo ok_released, Switch::PressInfo reset_released, LCDMenu::EntryDialogItems &item)
     {
-        return;
+        if (ok_released == Switch::PressInfo::Short) {
+            auto num_holes = std::get<int>(item[0].second);
+            auto dist_x = millimeters_to_pulses(std::get<float>(item[1].second));
+            auto dist_y = millimeters_to_pulses(std::get<float>(item[2].second));
+            list_positions.clear();
+            for (int i=0; i<num_holes; i++) {
+                list_positions.emplace_back(dist_x, dist_y);
+            }
+            pos_handler.set(list_positions);
+            lcd_menu.splash("Positions loaded", splash_time);
+        }
     };
     lcd_menu.register_dialog(
-        "<Line>", dialog1_menu_entry_cb,
+        "<Line>", holes_on_a_line_entry_cb,
         {
-            {"Num Holes", 2},
-            {"Offset-X", 1.0F},
-            {"Offset-Y", 1.0F},
-            {"Repeat-X", 1.0F},
-            {"Repeat-Y", 1.0F}
+            {"Num holes", 1},
+            {"Dist X (mm)", 0.0F},
+            {"Dist Y (mm)", 0.0F}
+        }
+    );
+
+    // ------------------------------------
+    // Handle holes on a line dialog
+    // ------------------------------------
+    auto holes_on_a_circle_entry_cb = [&list_positions, &pos_handler, &lcd_menu, &splash_time]
+        (Switch::PressInfo ok_released, Switch::PressInfo reset_released, LCDMenu::EntryDialogItems &item)
+    {
+        if (ok_released == Switch::PressInfo::Short) {
+            auto num_holes = std::get<int>(item[0].second);
+            auto radius = std::get<float>(item[1].second);
+            auto angle_offset = std::get<float>(item[2].second);
+            list_positions.clear();
+            holes_on_a_circle(num_holes, radius, angle_offset, list_positions);
+            lcd_menu.splash("Positions loaded", splash_time);
+            pos_handler.set(list_positions);
+        }
+    };
+    lcd_menu.register_dialog(
+        "<Circle>", holes_on_a_circle_entry_cb,
+        {
+            {"Num holes", 1},
+            {"Radius (mm)", 0.0F},
+            {"Angle (deg)", 0.0F}
         }
     );
 
     // ------------------------------------
     // Handle sdcard reading
     // ------------------------------------
-    std::vector<PulseUpdate> list_positions;
-    auto select1_menu_entry_cb = [&sdreader, &lcd_menu, &list_positions, &pos_handler]
+    auto select1_menu_entry_cb = [&sdreader, &lcd_menu, &list_positions, &pos_handler, &splash_time]
         (const std::string value)
     {
         list_positions.clear();
         auto rc = sdreader.read_positions(value, list_positions);
             if (rc == SDCardReader::ReadPosRc::Ok) {
-                lcd_menu.splash("Positions loaded", 2000);
+                lcd_menu.splash("Positions loaded", splash_time);
                 pos_handler.set(list_positions);
             }
             else {
-                lcd_menu.splash(SDCardReader::read_rc_info(rc), 2000);
+                lcd_menu.splash(SDCardReader::read_rc_info(rc), splash_time);
             }
     };
     lcd_menu.register_select("<Load from SD>", select1_menu_entry_cb, files);

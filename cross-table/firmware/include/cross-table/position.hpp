@@ -218,6 +218,14 @@ struct Position
     }
 
     /**
+     * @brief Return true if the rel position is null
+     */
+    bool is_null_rel() const
+    {
+        return (x.rel_pulse_pos() == 0 && y.rel_pulse_pos() == 0);
+    }
+
+    /**
      * @brief Format to a string all the position information
      */
     void print(char *buffer) {
@@ -302,6 +310,34 @@ public:
     }
 
     /**
+     * @brief Return true if the given relative position is the same at current index.
+     */
+    bool is_same_pos(const Position &pos) const
+    {
+        if (m_index >= 0 && m_index < updates_size()) {
+            if (m_updates[m_index].x == pos.x.rel_pulse_pos() &&
+                m_updates[m_index].y == pos.y.rel_pulse_pos()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @brief Is relative position is exactly the opposite than the one found at current index.
+     */
+    bool is_counter_pos(const Position &pos) const
+    {
+        if (m_index >= 0 && m_index < updates_size()) {
+            if (-m_updates[m_index].x == pos.x.rel_pulse_pos() &&
+                -m_updates[m_index].y == pos.y.rel_pulse_pos()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * @brief Update the current index with the given update.
      * @param[in] update
      *
@@ -359,6 +395,9 @@ public:
         if (m_index > 0) {
             m_index--;
             return true;
+        }
+        if (m_index == 0) {
+            m_index--;
         }
         return false;
     }

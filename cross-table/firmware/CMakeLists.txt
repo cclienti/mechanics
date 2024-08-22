@@ -34,16 +34,19 @@ add_compile_options(
     -Wno-unused-parameter
 )
 
+set(BASE_SRCS
+    src/lcd_display.cpp
+    src/lcd_menu.cpp
+    src/sdcard_config.cpp
+    src/sdcard_reader.cpp
+    src/math_func.cpp
+)
+
 # ---------------------------------------------------
 # Main executable
 # ---------------------------------------------------
-add_executable(cross-table
-    src/lcd_display.cpp
-    src/lcd_menu.cpp
-    src/main.cpp
-    src/sdcard_config.cpp
-    src/sdcard_reader.cpp
-)
+add_executable(cross-table ${BASE_SRCS} src/main.cpp)
+
 set_source_files_properties(
     src/sdcard_config.cpp
     PROPERTIES
@@ -64,11 +67,19 @@ pico_enable_stdio_uart(cross-table 0)
 # ---------------------------------------------------
 # Tests
 # ---------------------------------------------------
-add_executable(test-position-handler
-    tests/test_position_handler.cpp
-)
-target_include_directories(test-position-handler PUBLIC include)
-target_link_libraries(test-position-handler PRIVATE pico_stdlib)
-pico_add_extra_outputs(test-position-handler)
-pico_enable_stdio_usb(test-position-handler 1)
-pico_enable_stdio_uart(test-position-handler 0)
+list(APPEND TEST_NAMES test_position_handler test_switch)
+foreach(TEST_NAME IN LISTS TEST_NAMES)
+    message(STATUS "Adding ${TEST_NAME}")
+    add_executable(${TEST_NAME}
+	tests/${TEST_NAME}.cpp
+	${BASE_SRCS}
+    )
+    target_include_directories(${TEST_NAME} PUBLIC include)
+    target_link_libraries(
+	${TEST_NAME}
+	PRIVATE  hardware_pwm hardware_i2c hardware_spi hardware_pio no-OS-FatFS-SD-SDIO-SPI-RPi-Pico
+    )
+    pico_add_extra_outputs(${TEST_NAME})
+    pico_enable_stdio_usb(${TEST_NAME} 1)
+    pico_enable_stdio_uart(${TEST_NAME} 0)
+endforeach()
