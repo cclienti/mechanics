@@ -1,11 +1,6 @@
 #include "cross-table/position.hpp"
 
-#include "pico/stdio.h"
-#include "pico/time.h"
-
-#include <cstdio>
-#include <cstdint>
-#include <cstdlib>
+#include "unit_test.h"
 
 
 void print_pos(Position &pos)
@@ -37,21 +32,19 @@ PulseUpdate move_motors(Position &pos, bool simulate_error)
 }
 
 
-bool test_1(void)
+DECL_TEST(1)
 {
     Position pos;
     PositionsHandler pos_handler;
 
-    printf("- Loading positions -\n");
+    printf("*** Loading positions ***\n");
     pos_handler.set({{100*320, 200*320}, {300*320, 500*320}, {120*320, -30*320}});
     if (pos_handler.changed()) {
         pos_handler.next();
         pos_handler.update_rel_pos(pos);
     }
 
-    printf("---------------\n");
-    printf("- Simulate Ok -\n");
-    printf("---------------\n");
+    printf("*** Simulate Ok ***\n");
     // One more iteration whereas the vector has only two positions
     for (int i=0; i<4; i++) {
         // user can change previously loaded position here
@@ -74,9 +67,7 @@ bool test_1(void)
         printf("\n");
     }
 
-    printf("-----------------\n");
-    printf("- Simulate Prev -\n");
-    printf("-----------------\n");
+    printf("*** Simulate Prev ***\n");
     // One more iteration whereas the vector has only two positions.
     for (int i=0; i<5; i++) {
         if (pos_handler.is_counter_pos(pos)) {
@@ -102,24 +93,13 @@ bool test_1(void)
     return false;
 }
 
+
 int main(void)
 {
-    stdio_init_all();
-    sleep_ms(2000);
-    printf("\033[2J\n");
-    printf("=========================\n");
-    printf("= Test Position Handler =\n");
-    printf("=========================\n");
+    TEST_INFO("Test Switch");
 
-    printf("=====================\n");
-    printf("= Test 1            = \n");
-    printf("=====================\n");
-    if (test_1()) {
-        printf("=================> TEST 1: OK\n");
-    } else {
-        printf("=================> TEST 1: KO!!!\n");
-    }
+    START_TEST(1);
 
-    while(true);
+    while(true) {}
     return 0;
 }

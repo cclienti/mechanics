@@ -1,15 +1,11 @@
 #include "cross-table/switch.hpp"
 #include "cross-table/config.hpp"
 
-#include "pico/stdio.h"
-#include "pico/time.h"
-
-#include <cstdio>
-#include <cstdint>
-#include <cstdlib>
+#include "unit_test.h"
 
 
-bool test_1()
+
+DECL_TEST(1)
 {
     Switch sw_ok(TableConfig::pin_btn_ok, true);
     auto press_info = Switch::PressInfo::No;
@@ -51,7 +47,7 @@ bool test_1()
 }
 
 
-bool test_2()
+DECL_TEST(2)
 {
     Switch sw_ok(TableConfig::pin_btn_ok, true);
     auto press_info = Switch::PressInfo::No;
@@ -97,31 +93,11 @@ bool test_2()
 
 int main()
 {
-    stdio_init_all();
-    sleep_ms(2000);
-    printf("\033[2J\n");
-    printf("=========================\n");
-    printf("= Test Switch           =\n");
-    printf("=========================\n");
+    TEST_INFO("Test Switch");
 
-    printf("=====================\n");
-    printf("= Test 1            = \n");
-    printf("=====================\n");
-    if (test_1()) {
-        printf("=================> TEST 1: OK\n");
-    } else {
-        printf("=================> TEST 1: KO!!!\n");
-    }
+    START_TEST(1);
+    START_TEST(2);
 
-    printf("=====================\n");
-    printf("= Test 2            = \n");
-    printf("=====================\n");
-    if (test_2()) {
-        printf("=================> TEST 2: OK\n");
-    } else {
-        printf("=================> TEST 2: KO!!!\n");
-    }
-
-    while(true);
+    while(true) {}
     return 0;
 }

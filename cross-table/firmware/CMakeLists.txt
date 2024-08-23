@@ -67,7 +67,7 @@ pico_enable_stdio_uart(cross-table 0)
 # ---------------------------------------------------
 # Tests
 # ---------------------------------------------------
-list(APPEND TEST_NAMES test_position_handler test_switch)
+list(APPEND TEST_NAMES test_position_handler test_switch test_math_func)
 foreach(TEST_NAME IN LISTS TEST_NAMES)
     message(STATUS "Adding ${TEST_NAME}")
     add_executable(${TEST_NAME}
