@@ -81,7 +81,8 @@ public:
 
             period = count < count_rev ? period - m_period_incr : period + m_period_incr;
         }
-        release();
+        // We prefer controlling the motor release in the main loop.
+        // release();
         return pulses-count;
     }
 

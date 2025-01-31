@@ -47,6 +47,7 @@ int move_motor(StepMotorDriver &step, Axis &axis, bool dry_run)
         direction = -1;
     }
     else {
+        step.hold();
         return 0;
     }
 
@@ -66,6 +67,12 @@ PulseUpdate move_motors(StepMotorDriver &step_x, StepMotorDriver &step_y, Positi
     return {x, y};
 }
 
+void release_motors(StepMotorDriver &step_x, StepMotorDriver &step_y)
+{
+    step_x.release();
+    step_y.release();
+}
+
 int main() {
     stdio_init_all();
 
@@ -82,7 +89,7 @@ int main() {
                            TableConfig::pin_step_y_dir,
                            TableConfig::pin_step_y_ena,
                            TableConfig::pin_step_limit_0);
-    bool motor_dry_run = true;
+    bool motor_dry_run = false;
 
     constexpr int splash_time = 2000;
 
@@ -90,8 +97,8 @@ int main() {
     std::vector<std::string> files;
     std::vector<PulseUpdate> list_positions;
     sdreader.list_files(files);
-    step_x.release();
-    step_y.release();
+
+    release_motors(step_x, step_y);
 
     // ------------------------------------
     // Handle Position Display and Update
@@ -111,22 +118,26 @@ int main() {
         int pressed = static_cast<int>(buttons.x_minus.is_pressed());
         if (pressed != 0) {
             pos.x.incr_half_tenth(-1*pressed);
+            release_motors(step_x, step_y);
         }
 
         pressed = static_cast<int>(buttons.x_plus.is_pressed());
         if (pressed != 0) {
             pos.x.incr_half_tenth(pressed);
+            release_motors(step_x, step_y);
         }
 
         pressed = static_cast<int>(buttons.y_minus.is_pressed());
         if (pressed != 0) {
             pos.y.incr_half_tenth(-1*pressed);
-        }
+             release_motors(step_x, step_y);
+       }
 
         pressed = static_cast<int>(buttons.y_plus.is_pressed());
         if (pressed != 0) {
             pos.y.incr_half_tenth(pressed);
-        }
+            release_motors(step_x, step_y);
+      }
 
         // Handle Ok button
         if (buttons.ok.is_released()) {
@@ -158,6 +169,7 @@ int main() {
                 if (buttons.ok.is_released()) {
                     pos_handler.set({});
                     pos.reset();
+                    release_motors(step_x, step_y);
                     lcd_menu.splash("Done", splash_time);
                     break;
                 }
