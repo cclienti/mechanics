@@ -30,7 +30,6 @@ add_subdirectory(no-OS-FatFS-SD-SDIO-SPI-RPi-Pico/src)
 add_compile_options(
     -Wall
     -Wextra
-    -Werror
     -Wno-unused-parameter
 )
 
