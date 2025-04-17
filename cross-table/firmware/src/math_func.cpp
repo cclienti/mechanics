@@ -15,3 +15,18 @@ void holes_on_a_circle(std::uint32_t num_holes, float radius,
         pulse_updates.emplace_back(x_up, y_up);
     }
 }
+
+void holes_on_grid(std::uint32_t num_x_holes, std::uint32_t num_y_holes,
+                   float dist_x, float dist_y, std::vector<PulseUpdate> &pulse_updates)
+{
+    // Enjoy the boustrophedon algorithm
+    for (std::uint32_t row_idx = 0; row_idx < num_y_holes; row_idx++) {
+        if (row_idx > 0) {
+            pulse_updates.emplace_back(0, millimeters_to_pulses(dist_y));
+        }
+        for (std::uint32_t col_idx = 1; col_idx < num_x_holes; col_idx++) {
+            auto x_rel = (row_idx & 1) ? -dist_x : dist_x;
+            pulse_updates.emplace_back(millimeters_to_pulses(x_rel), 0);
+        }
+    }
+}

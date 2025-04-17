@@ -215,7 +215,34 @@ int main() {
     );
 
     // ------------------------------------
-    // Handle holes on a line dialog
+    // Handle holes on a grid
+    // ------------------------------------
+    auto holes_on_grid_entry_cb = [&list_positions, &pos_handler, &lcd_menu, &splash_time]
+        (Switch::PressInfo ok_released, Switch::PressInfo reset_released, LCDMenu::EntryDialogItems &item)
+    {
+        if (ok_released == Switch::PressInfo::Short) {
+            auto num_x_holes = std::get<int>(item[0].second);
+            auto num_y_holes = std::get<int>(item[1].second);
+            auto dist_x = std::get<float>(item[2].second);
+            auto dist_y = std::get<float>(item[3].second);
+            list_positions.clear();
+            holes_on_grid(num_x_holes, num_y_holes, dist_x, dist_y, list_positions);
+            lcd_menu.splash("Positions loaded", splash_time);
+            pos_handler.set(list_positions);
+        }
+    };
+    lcd_menu.register_dialog(
+        "<Grid>", holes_on_grid_entry_cb,
+        {
+            {"Num X holes", 1},
+            {"Num Y holes", 1},
+            {"Dist X (mm)", 0.0F},
+            {"Dist Y (mm)", 0.0F},
+        }
+    );
+
+    // ------------------------------------
+    // Handle holes on a circle
     // ------------------------------------
     auto holes_on_a_circle_entry_cb = [&list_positions, &pos_handler, &lcd_menu, &splash_time]
         (Switch::PressInfo ok_released, Switch::PressInfo reset_released, LCDMenu::EntryDialogItems &item)

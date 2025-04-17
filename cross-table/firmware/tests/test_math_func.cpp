@@ -68,12 +68,47 @@ DECL_TEST(2) {
 
 
 
+DECL_TEST(3) {
+    std::vector<PulseUpdate> updates;
+
+    holes_on_grid(3, 2, 10.0f, 20.0f, updates);
+    if (updates.size() != 5) {
+        printf("bad vector size\n");
+        return false;
+    }
+    bool success{true};
+    success &= updates[0].x == millimeters_to_pulses(10.0f);
+    success &= updates[0].y == 0;
+
+    success &= updates[1].x == millimeters_to_pulses(10.0f);
+    success &= updates[1].y == 0;
+
+    success &= updates[2].x == 0;
+    success &= updates[2].y == millimeters_to_pulses(20.0f);
+
+    success &= updates[3].x == millimeters_to_pulses(-10.0f);
+    success &= updates[3].y == 0;
+
+    success &= updates[4].x == millimeters_to_pulses(-10.0f);
+    success &= updates[4].y == 0;
+
+    if (!success) {
+        printf("Error founds, vector returned:\n");
+        print_vector(updates);
+    }
+
+    return success;
+}
+
+
+
 int main()
 {
     TEST_INFO("Test Switch");
 
     START_TEST(1);
     START_TEST(2);
+    START_TEST(3);
 
     while(true) {}
     return 0;

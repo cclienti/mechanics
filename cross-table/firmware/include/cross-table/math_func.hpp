@@ -47,3 +47,16 @@ static inline int millimeters_to_pulses(float millimeters)
  */
 void holes_on_a_circle(std::uint32_t num_holes, float radius,
                        float angle_offset, std::vector<PulseUpdate> &pulse_updates);
+
+
+/**
+ * @brief Configure a list of coordinates to drill holes on a grid
+ * @param[in] num_x_holes, number of holes in the X direction
+ * @param[in] num_y_holes, number of holes in the Y direction
+ * @param[in] dist_x, distance in millimeters between hole in X direction
+ * @param[in] dist_y, distance in millimeters between hole in Y direction
+ * @param[out] List of pulse updates
+ *
+ */
+void holes_on_grid(std::uint32_t num_x_holes, std::uint32_t num_y_holes,
+                   float dist_x, float dist_y, std::vector<PulseUpdate> &pulse_updates);
